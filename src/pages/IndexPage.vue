@@ -34,16 +34,16 @@
       <q-page class="flex">
         <div class="full-width full-height flex flex-col items-center p-12 gap-9">
           <div class="flex items-center gap-2">
-            <span class="my-font">Asten</span>
+            <span class="my-font tracking-widest">Asten</span>
             <q-icon :name="`img:${logoUrl}`" size="30px" />
-            <span class="my-font">City</span>
+            <span class="my-font tracking-widest">City</span>
           </div>
 
           <!--evitar sobreposição-->
           <q-space />
 
           <div class="flex flex-center">
-            <q-icon :name="`img:${imageUrl}`" size="200px" />
+            <q-icon :name="`img:${imageUrl}`" size="250px" />
           </div>
 
           <q-space />
@@ -60,7 +60,7 @@
                 rounded
                 padding="16px 0"
                 class="full-width font-bold orange text-grey-8 my-font3"
-                to="/login"
+                to="/dashboard"
               />
             </div>
           </div>
@@ -74,5 +74,5 @@
 <script setup lang="ts">
 //importando as imagens
 import logoUrl from 'assets/logo.png';
-import imageUrl from 'assets/image.png';
+import imageUrl from 'assets/image.svg';
 </script>

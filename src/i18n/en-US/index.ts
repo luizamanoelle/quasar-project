@@ -1,7 +1,7 @@
 export default {
   index: {
-    title: 'Gestão de Cidades',
-    description: 'Plataforma para monitoramento de infraestrutura urbana e engajamento cidadão.',
-    btnStart: 'Começar',
+    title: 'City Management',
+    description: 'Platform for urban infrastructure monitoring and citizen engagement.',
+    btnStart: 'Get Started',
   },
 };

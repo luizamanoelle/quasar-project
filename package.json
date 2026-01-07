@@ -24,7 +24,8 @@
     "tailwindcss": "^4.1.18",
     "vue": "^3.5.22",
     "vue-i18n": "^11.0.0",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.0.12",
+    "vue3-geolocation": "^1.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",

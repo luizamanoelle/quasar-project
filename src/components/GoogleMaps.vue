@@ -1,4 +1,7 @@
 <template>
-  <h1>Login</h1>
+  <div>
+    <p>google maps compoenent</p>
+  </div>
 </template>
+
 <script setup lang="ts"></script>
