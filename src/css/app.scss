@@ -1,0 +1,44 @@
+// app global css in SCSS form
+@font-face {
+  font-family: 'Ubuntu';
+  src: url('./fonts/Ubuntu-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Ubuntu Medium';
+  src: url('./fonts/Ubuntu-Medium.ttf');
+}
+
+@font-face {
+  font-family: 'Ubuntu Light';
+  src: url('./fonts/Ubuntu-Light.ttf');
+}
+
+.my-font {
+  font-family: 'Ubuntu';
+  font-weight: 400;
+  font-size: 20px;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: 4.8px;
+}
+
+.my-font2 {
+  font-family: 'Ubuntu Medium';
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 135%;
+}
+
+.my-font3 {
+  font-family: 'Ubuntu Light';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 165%;
+}
+
+.orange {
+  background: #ffc23f;
+}
