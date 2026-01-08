@@ -30,5 +30,5 @@
 </template>
 
 <script setup lang="ts">
-import GoogleMaps from 'src/components/GoogleMaps.vue';
+import GoogleMaps from 'src/components/GeoLocation.vue';
 </script>

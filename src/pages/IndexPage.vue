@@ -2,13 +2,7 @@
   <!--onda de fundo-->
   <q-layout view="lHh Lpr lFf">
     <div class="absolute-top-left full-width">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="100%"
-        height="auto"
-        viewBox="0 0 413 488"
-        fill="none"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 413 488" fill="none">
         <path
           d="M-2 0V382.053C-2 382.053 30.2351 450.788 113.112 442.811C195.989 434.835 213.177 391.876 313.243 471.049C313.243 471.049 348.543 504.185 413 502.967V0H-2Z"
           fill="#FAF8F5"
