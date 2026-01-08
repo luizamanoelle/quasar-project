@@ -6,7 +6,7 @@
       <q-page class="column no-wrap overflow-hidden q-pa-md">
         <div class="text-center q-pt-lg">
           <span class="my-font tracking-normal">Olá, Luiza</span>
-          <p class="text-grey-7">Hoje 07 Jan</p>
+          <p class="text-grey-7">Hoje {{ dia }} {{ month }}</p>
         </div>
 
         <q-separator color="black" inset class="full-width" />
@@ -30,4 +30,8 @@
 
 <script setup lang="ts">
 import GeoLocation from 'src/components/GeoLocation.vue';
+
+const dataAtual = new Date();
+const dia = dataAtual.getDate();
+const month = dataAtual.toLocaleDateString('pt-BR', { month: 'short' });
 </script>

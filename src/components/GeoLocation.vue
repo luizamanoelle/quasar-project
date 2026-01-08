@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>{{ lat }} , {{ lng }}</p>
+    <p>{{ lat }} {{ lng }}</p>
 
     <!--telinha do mapa-->
     <div ref="mapContainer" style="width: 100%; height: 188px; max-height: 50vh"></div>
@@ -42,20 +42,18 @@ function getLocation() {
       (position) => {
         lat.value = position.coords.latitude;
         lng.value = position.coords.longitude;
-        //centraliza o mapa
 
         if (map.value) {
-          // 1. Centraliza o mapa na nova posição
+          //centraliza o mapaa
           map.value.setView([lat.value, lng.value], 20);
 
-          // 2. Gerencia o marcador para não criar vários
+          //marcadores
           if (marker.value) {
             marker.value.setLatLng([lat.value, lng.value]);
           } else {
             marker.value = L.marker([lat.value, lng.value], { draggable: true })
               .addTo(map.value)
               .on('dragend', (event) => {
-                // Atualiza as refs se o usuário arrastar o ponto manualmente
                 const newPos = event.target.getLatLng();
                 lat.value = newPos.lat;
                 lng.value = newPos.lng;
@@ -65,9 +63,6 @@ function getLocation() {
       },
       (error) => {
         console.error('Erro de geolocalização:', error);
-      },
-      {
-        enableHighAccuracy: true, // Melhora a precisão do ponto central
       },
     );
   }
