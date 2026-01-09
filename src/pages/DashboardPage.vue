@@ -5,11 +5,11 @@
     <q-page-container>
       <q-page class="column no-wrap overflow-hidden q-pa-md">
         <div class="text-center q-pt-lg">
-          <span class="my-font tracking-normal">Olá, Luiza</span>
+          <span class="my-font tracking-normal text-h5">Olá, Luiza</span>
           <p class="text-grey-7">Hoje {{ dia }} {{ month }}</p>
         </div>
 
-        <q-separator color="black" inset class="full-width" />
+        <q-separator color="black" inset class="full-width q-my-md" />
 
         <GeoLocation />
 

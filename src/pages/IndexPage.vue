@@ -21,7 +21,7 @@
           <q-space />
 
           <div class="text-center full-width">
-            <h1 class="my-font2">{{ $t('index.title') }}</h1>
+            <h1 class="my-font2 text-h4">{{ $t('index.title') }}</h1>
             <p class="my-font3 text-justify-center text-grey-7 px-10">
               {{ $t('index.description') }}
             </p>

@@ -11,6 +11,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: 'dashboard', component: () => import('pages/DashboardPage.vue') }],
   },
+  {
+    path: '/report',
+    name: 'report',
+    component: () => import('pages/ReportPage.vue'),
+  },
 
   {
     path: '/:catchAll(.*)*',
