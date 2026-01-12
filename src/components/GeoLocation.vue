@@ -4,7 +4,7 @@
     <div ref="mapContainer" style="width: 100%; height: 188px; max-height: 50vh"></div>
 
     <div v-if="cityName" class="text-center my-font2 text-h5 q-mb-sm q-pa-lg">
-      Você está em {{ cityName }}
+      Você está em {{ cityName }}, {{ roadName }}, {{ houseName }}, {{ neighbourhoodName }}
     </div>
   </div>
 </template>
@@ -22,6 +22,9 @@ const map = ref<L.Map>();
 const mapContainer = useTemplateRef<HTMLElement>('mapContainer');
 const marker = ref<L.Marker>();
 const cityName = ref('');
+const roadName = ref('');
+const houseName = ref('');
+const neighbourhoodName = ref('');
 
 onMounted(() => {
   if (mapContainer.value) {
@@ -42,25 +45,27 @@ onMounted(() => {
 async function getCity(latitude: number, longitude: number) {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`,
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
       {
         headers: {
-          'User-Agent': 'AstenCityApp/1.0', // Identificação necessária para evitar bloqueios
+          Accept: 'application/json',
+          'User-Agent': 'luizamanoelle@hotmail.com',
         },
       },
     );
+
     const data = await res.json();
     console.log('Dados do Nominatim:', data); // Verifica isto no Console do navegador
 
     if (data.address) {
       // O Nominatim pode devolver a cidade em vários campos dependendo da região
-      cityName.value =
-        data.address.city ||
-        data.address.town ||
-        data.address.municipality ||
-        data.address.village ||
-        data.address.suburb ||
-        'Localização identificada';
+      cityName.value = data.address.city;
+
+      roadName.value = data.address.road;
+
+      houseName.value = data.address.house_number;
+
+      neighbourhoodName.value = data.address.neighbourhood;
     }
   } catch (error) {
     console.error('Erro na API Nominatim:', error);
@@ -71,7 +76,7 @@ async function getCity(latitude: number, longitude: number) {
 function getLocation() {
   if (navigator.geolocation) {
     //watch pra acompanhar a localização
-    navigator.geolocation.watchPosition(
+    navigator.geolocation.getCurrentPosition(
       (position) => {
         lat.value = position.coords.latitude;
         lng.value = position.coords.longitude;
