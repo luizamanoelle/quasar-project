@@ -13,6 +13,7 @@
 import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useLocationStore } from 'src/stores/location';
 
 defineOptions({ name: 'GeoLocation' });
 
@@ -25,6 +26,8 @@ const cityName = ref('');
 const roadName = ref('');
 const houseName = ref('');
 const neighbourhoodName = ref('');
+
+const locationStore = useLocationStore();
 
 onMounted(() => {
   if (mapContainer.value) {
@@ -58,14 +61,7 @@ async function getCity(latitude: number, longitude: number) {
     console.log('Dados do Nominatim:', data); // Verifica isto no Console do navegador
 
     if (data.address) {
-      // O Nominatim pode devolver a cidade em vários campos dependendo da região
-      cityName.value = data.address.city;
-
-      roadName.value = data.address.road;
-
-      houseName.value = data.address.house_number;
-
-      neighbourhoodName.value = data.address.neighbourhood;
+      locationStore.setAddress({ ...data.address, lat: latitude, lng: longitude });
     }
   } catch (error) {
     console.error('Erro na API Nominatim:', error);
