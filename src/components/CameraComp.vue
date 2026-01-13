@@ -1,20 +1,11 @@
 <template>
   <q-page padding>
-    <p class="text-h6">Camera</p>
     <div class="row">
       <div class="col-12">
-        <video ref="video" autoplay playsinline webkit-playsinLine muted hidden></video>
+        <!--recebe a camera automaticamente -->
+        <video ref="video" autoplay playsinline muted hidden></video>
+        <!--desenha o video -->
         <canvas ref="canvas" width="1280" height="720" class="rounded-3x1"></canvas>
-        <div class="flex items-center justify-center py-4">
-          <button
-            class="px-6 py-4 bg-green-500 rounded text-white text-2x1 uppercase font-bold hover:bg-green-600"
-          >
-            take a picture
-          </button>
-        </div>
-      </div>
-      <div class="col-12">
-        <q-btn label="Acessar Camera"></q-btn>
       </div>
     </div>
   </q-page>
@@ -29,6 +20,7 @@ const canvas = ref<HTMLCanvasElement | null>(null);
 const video = ref<HTMLVideoElement | null>(null);
 const ctx = ref<CanvasRenderingContext2D | null>(null);
 
+//sem mic
 const constraints = ref({
   audio: false,
   video: true,
@@ -39,10 +31,11 @@ onMounted(async () => {
     ctx.value = canvas.value.getContext('2d');
 
     try {
+      //pega a webcam/cam e passa os valores de audio e video
       const stream = await navigator.mediaDevices.getUserMedia(constraints.value);
       setStream(stream);
     } catch (e) {
-      console.error('Erro ao acessar câmera:', e);
+      console.error(e);
     }
   }
 });

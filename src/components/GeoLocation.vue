@@ -2,10 +2,6 @@
   <div>
     <!--telinha do mapa-->
     <div ref="mapContainer" style="width: 100%; height: 188px; max-height: 50vh"></div>
-
-    <div v-if="cityName" class="text-center my-font2 text-h5 q-mb-sm q-pa-lg">
-      Você está em {{ cityName }}, {{ roadName }}, {{ houseName }}, {{ neighbourhoodName }}
-    </div>
   </div>
 </template>
 
@@ -23,9 +19,9 @@ const map = ref<L.Map>();
 const mapContainer = useTemplateRef<HTMLElement>('mapContainer');
 const marker = ref<L.Marker>();
 const cityName = ref('');
-const roadName = ref('');
-const houseName = ref('');
-const neighbourhoodName = ref('');
+//const roadName = ref('');
+//const houseName = ref('');
+//const neighbourhoodName = ref('');
 
 const locationStore = useLocationStore();
 
