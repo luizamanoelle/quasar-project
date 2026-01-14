@@ -66,6 +66,7 @@
               icon="add_a_photo"
               no-caps
               class="my-font2 text-h6 full-width"
+              to="/cam"
             >
               <span class="q-ml-sm">Tire foto da ocorrência</span>
             </q-btn>

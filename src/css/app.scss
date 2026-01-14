@@ -1,41 +1,6 @@
 // app global css in SCSS form
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('./fonts/Ubuntu-Regular.ttf');
-}
-
-@font-face {
-  font-family: 'Ubuntu Medium';
-  src: url('./fonts/Ubuntu-Medium.ttf');
-}
-
-@font-face {
-  font-family: 'Ubuntu Light';
-  src: url('./fonts/Ubuntu-Light.ttf');
-}
-
-.my-font {
-  font-family: 'Ubuntu';
-  font-weight: 400;
-  font-style: normal;
-  line-height: normal;
-}
-
-.my-font2 {
-  font-family: 'Ubuntu Medium';
-  font-style: normal;
-  font-weight: 500;
-  line-height: 135%;
-}
-
-.my-font3 {
-  font-family: 'Ubuntu Light';
-  font-style: normal;
-  font-weight: 300;
-  line-height: 165%;
-}
-
-.my-font4 {
+body {
+  font-family: 'Roboto';
 }
 
 .orange {
@@ -44,4 +9,14 @@
 
 .light {
   color: #fdfd96;
+}
+
+.camera-canvas {
+  width: 100%;
+  max-width: 800px; //limite pro pc
+  aspect-ratio: 3 / 4; // mobile
+  background-color: #000;
+  display: block;
+  border-radius: 12px;
+  object-fit: cover;
 }

@@ -1,14 +1,29 @@
 <template>
-  <q-page padding>
-    <div class="row">
-      <div class="col-12">
-        <!--recebe a camera automaticamente -->
-        <video ref="video" autoplay playsinline muted hidden></video>
-        <!--desenha o video -->
-        <canvas ref="canvas" width="1280" height="720" class="rounded-3x1"></canvas>
-      </div>
+  <div class="row flex-center column">
+    <!--recebe a camera automaticamente -->
+    <video ref="video" autoplay playsinline muted hidden></video>
+    <!--desenha o video -->
+    <canvas ref="canvas" class="camera-canvas"></canvas>
+
+    <div class="q-pt-md">
+      <q-btn
+        rounded
+        padding="sm"
+        color="white"
+        text-color="black"
+        label="Escolher da Galeria"
+        icon="upload"
+        @click="TakePicture"
+      />
     </div>
-  </q-page>
+
+    <div class="q-pt-md relative">
+      <q-btn outline round padding="xl" color="white" icon="photo_camera" @click="TakePicture" />
+      <q-btn round padding="lg" class="absolute top-6 left-2" color="white" @click="TakePicture">
+        <q-icon name="photo_camera" color="grey-10" />
+      </q-btn>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -18,6 +33,7 @@ defineOptions({ name: 'CameraComp' });
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const video = ref<HTMLVideoElement | null>(null);
+//desenhar dentro do canvas a imagem
 const ctx = ref<CanvasRenderingContext2D | null>(null);
 
 //sem mic
@@ -30,8 +46,12 @@ onMounted(async () => {
   if (video.value && canvas.value) {
     ctx.value = canvas.value.getContext('2d');
 
+    //sempre que a janela for redimencionada chama o resize
+    window.addEventListener('resize', resizeCanvas);
+
     try {
-      //pega a webcam/cam e passa os valores de audio e video
+      //pede permissao e pega a webcam/cam e passa os valores de audio e video
+      //espera a camera
       const stream = await navigator.mediaDevices.getUserMedia(constraints.value);
       setStream(stream);
     } catch (e) {
@@ -42,10 +62,14 @@ onMounted(async () => {
 
 function setStream(stream: MediaStream) {
   if (video.value) {
+    //coloca o video na tela
     video.value.srcObject = stream;
     video.value
       .play()
       .then(() => {
+        //redimenciona
+        resizeCanvas();
+        //desenha os frames
         requestAnimationFrame(draw);
       })
       .catch((err) => console.error('Erro ao dar play no vídeo:', err));
@@ -54,9 +78,35 @@ function setStream(stream: MediaStream) {
 
 function draw() {
   if (ctx.value && video.value && video.value.readyState === 4) {
-    // readyState 4 = HAVE_ENOUGH_DATA
+    // readyState 4 = assume que a conexão vai ficar estavel
     ctx.value.drawImage(video.value, 0, 0, canvas.value!.width, canvas.value!.height);
   }
+  //vai desenhando
   requestAnimationFrame(draw);
+}
+
+//reposicionar a camera com a tela
+function resizeCanvas() {
+  if (!canvas.value) return;
+
+  //pega os valores da tela
+  const width = canvas.value.clientWidth;
+
+  // Calculamos a altura baseada na proporção 16:9
+  const height = width * (9 / 16);
+
+  // Definimos a resolução interna do desenho
+  canvas.value.width = width;
+  canvas.value.height = height;
+}
+
+function TakePicture() {
+  const ex = canvas.value;
+  if (!ex) return;
+  const link = document.createElement('a');
+  link.download = `vue-cam-${new Date().toISOString()}.png`;
+  //converte a imagem com o toData
+  link.href = ex.toDataURL('image/png');
+  link.click();
 }
 </script>
