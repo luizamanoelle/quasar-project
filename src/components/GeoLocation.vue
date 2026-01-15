@@ -1,8 +1,7 @@
 <template>
-  <div>
-    <!--telinha do mapa-->
+  <q-card class="overflow-hidden" flat bordered style="border-radius: 24px">
     <div ref="mapContainer" style="width: 100%; height: 188px; max-height: 50vh"></div>
-  </div>
+  </q-card>
 </template>
 
 <script setup lang="ts">
