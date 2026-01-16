@@ -22,6 +22,7 @@ export const useLocationStore = defineStore('location', {
       lat: 0,
       lng: 0,
     },
+    photos: [] as string[],
   }),
   actions: {
     setAddress(payload: NominatimAddress) {
@@ -33,6 +34,15 @@ export const useLocationStore = defineStore('location', {
         lat: payload.lat || 0,
         lng: payload.lng || 0,
       };
+    },
+    addPhoto(photo: string) {
+      this.photos.push(photo);
+    },
+    removePhoto(index: number) {
+      this.photos.splice(index, 1);
+    },
+    clearPhotos() {
+      this.photos = [];
     },
   },
 });

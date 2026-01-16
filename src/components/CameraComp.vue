@@ -28,6 +28,13 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useLocationStore } from 'src/stores/location';
+import { useRouter } from 'vue-router';
+import { useQuasar } from 'quasar';
+
+const locationStore = useLocationStore();
+const router = useRouter();
+const $q = useQuasar();
 
 defineOptions({ name: 'CameraComp' });
 
@@ -103,10 +110,19 @@ function resizeCanvas() {
 function TakePicture() {
   const ex = canvas.value;
   if (!ex) return;
-  const link = document.createElement('a');
-  link.download = `vue-cam-${new Date().toISOString()}.png`;
+
   //converte a imagem com o toData
-  link.href = ex.toDataURL('image/png');
-  link.click();
+  const photoBase64 = ex.toDataURL('image/png');
+
+  locationStore.addPhoto(photoBase64);
+
+  $q.notify({
+    message: 'Foto adicionada!',
+    color: 'positive',
+    icon: 'photo_camera',
+    timeout: 500,
+  });
+
+  void router.push('/report');
 }
 </script>

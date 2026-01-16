@@ -74,19 +74,44 @@
 
         <!--botao da foto-->
         <div class="q-mt-md">
-          <q-btn
-            style="border-radius: 15px"
-            color="grey-3"
-            text-color="grey-7"
-            icon="add_a_photo"
-            no-caps
-            class="text-weight-medium text-h6 full-width"
-            to="/cam"
-          >
-            <span class="q-ml-sm">Tire foto da ocorrência</span>
-          </q-btn>
-        </div>
+          <span class="text-weight-regular">Fotos do problema</span>
 
+          <div class="row q-col-gutter-sm q-mt-xs">
+            <div
+              v-for="(photo, index) in locationStore.photos"
+              :key="index"
+              class="col-4 relative-position"
+            >
+              <q-img
+                :src="photo"
+                style="border-radius: 12px; height: 100px"
+                class="shadow-2"
+                cover
+              />
+              <q-btn
+                fab-mini
+                dense
+                color="red"
+                icon="close"
+                size="xs"
+                class="absolute top-0 right-0 q-ma-xs"
+                @click="locationStore.removePhoto(index)"
+              />
+            </div>
+
+            <div class="col-4">
+              <q-btn
+                color="grey-3"
+                text-color="grey-7"
+                icon="add_a_photo"
+                class="full-width"
+                style="height: 100px; border-radius: 12px; border: 2px dashed #ccc"
+                flat
+                to="/cam"
+              />
+            </div>
+          </div>
+        </div>
         <!--descrição-->
         <div class="q-mt-md">
           <span class="text-weight-regular tracking-normal">Descreva o problema</span>
@@ -136,6 +161,7 @@
           color="primary"
           class="full-width q-mt-md py-md"
           rounded
+          to="/dashboard"
         >
           <span class="q-ml-md text-h6 text-weight-bold">Enviar Ocorrência</span></q-btn
         >
@@ -189,11 +215,14 @@ async function submitReport() {
         lat: locationStore.address.lat,
         lng: locationStore.address.lng,
       },
+      imagens: locationStore.photos,
       data_criacao: new Date().toLocaleDateString('pt-BR'),
       status: 1,
     };
     //post
     await api.post('/ocorrencias', payload);
+
+    locationStore.clearPhotos();
 
     $q.notify({
       color: 'positive',
