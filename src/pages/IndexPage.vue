@@ -1,50 +1,46 @@
 <template>
-  <!--onda de fundo-->
   <q-layout view="lHh Lpr lFf">
-    <!--q page é usado p nao criar barra de rolagem e alinhar c os headers e footers do quasar-->
     <q-page-container>
-      <q-page class="flex">
-        <div class="full-width full-height flex flex-col items-center p-12 gap-9">
-          <div class="flex items-center gap-2">
-            <span class="my-font tracking-widest">Asten</span>
-            <q-icon :name="`img:${logoUrl}`" size="30px" />
-            <span class="my-font tracking-widest">City</span>
-          </div>
-
-          <!--evitar sobreposição-->
-          <q-space />
-
-          <div class="flex flex-center">
-            <q-icon :name="`img:${imageUrl}`" size="250px" />
-          </div>
-
-          <q-space />
-
-          <div class="text-center full-width">
-            <h1 class="my-font2 text-h4">{{ $t('index.title') }}</h1>
-            <p class="my-font3 text-justify-center text-grey-7 px-10">
-              {{ $t('index.description') }}
+      <q-page>
+        <div
+          class="flex flex-center flex-col full-width min-h-screen md:flex-row p-6 md:p-12 gap-2"
+        >
+          <!--titulo-->
+          <div>
+            <p class="text-3xl md:text-5xl font-bold">
+              {{ $t('index.title') }}
+              <span class="text-grey-9">{{ $t('index.appName') }}!</span>
             </p>
+          </div>
 
-            <div class="full-width px-6 py-5">
-              <q-btn
-                :label="$t('index.btnStart')"
-                rounded
-                padding="16px 0"
-                class="full-width font-bold orange text-grey-8 my-font3"
-                to="/dashboard"
-              />
-            </div>
+          <!--imagem-->
+          <div class="w-full max-w-sm md:max-w-lg">
+            <q-img :src="imageUrl" class="md:scale-110" fit="contain" />
+          </div>
+
+          <!--descrição-->
+          <p class="text-center text-grey-8 text-lg md:text-xl max-w-md">
+            {{ $t('index.description') }}
+          </p>
+
+          <!--botão-->
+          <div class="w-full max-w-xs md:max-w-sm">
+            <q-btn
+              :label="$t('index.btnStart')"
+              color="black"
+              rounded
+              unelevated
+              padding="16px"
+              class="full-width font-bold text-white shadow-2"
+              to="/login"
+            />
           </div>
         </div>
-        <!--ordem de hierarquia das page-->
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-//importando as imagens
-import logoUrl from 'assets/logo.png';
-import imageUrl from 'assets/image.svg';
+import imageUrl from 'assets/home.svg';
 </script>

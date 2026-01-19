@@ -1,6 +1,7 @@
 export default {
   index: {
-    title: 'Gestão de Cidades',
+    title: 'Bem-vindo ao',
+    appName: 'Radar da Bagunça',
     description: 'Plataforma para monitoramento de infraestrutura urbana e engajamento cidadão.',
     btnStart: 'Começar',
   },

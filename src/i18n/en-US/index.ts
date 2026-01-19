@@ -1,6 +1,7 @@
 export default {
   index: {
-    title: 'City Management',
+    title: 'Welcome to',
+    appName: 'Radar da Bagunça',
     description: 'Platform for urban infrastructure monitoring and citizen engagement.',
     btnStart: 'Get Started',
   },

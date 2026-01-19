@@ -17,9 +17,14 @@ const routes: RouteRecordRaw[] = [
     component: () => import('pages/ReportPage.vue'),
   },
   {
-    path: '/createaccount',
-    name: 'createaccount',
+    path: '/register',
+    name: 'register',
     component: () => import('pages/CreateAccount.vue'),
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('pages/LoginPage.vue'),
   },
 
   { path: '/cam', component: () => import('pages/CameraPage.vue') },

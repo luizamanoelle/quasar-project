@@ -4,8 +4,13 @@
       "id": "1",
       "nome": "Luiza Manoelle",
       "email": "luiza@exemplo.com",
-      "avatar": "assets/avatars/luiza.png",
       "senha": "123"
+    },
+    {
+      "id": "e3c4",
+      "nome": "teste",
+      "email": "teste@teste",
+      "senha": "teste"
     }
   ],
   "tipos_ocorrencia": [

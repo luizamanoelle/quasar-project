@@ -33,5 +33,21 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
+  Router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('asten_token');
+    const publicPages = ['/', '/register', '/login']; // Páginas que não precisam de login
+    const authRequired = !publicPages.includes(to.path);
+
+    if (authRequired && !token) {
+      return next('/');
+    }
+
+    if (token && publicPages.includes(to.path)) {
+      return next('/dashboard'); // Redireciona para dashboard se já estiver logado
+    }
+
+    next();
+  });
+
   return Router;
 });
