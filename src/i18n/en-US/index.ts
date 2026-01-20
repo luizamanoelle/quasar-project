@@ -19,4 +19,39 @@ export default {
     fail: 'Incorrect email or password.',
     error: 'Error connecting to the server.',
   },
+
+  dashboard: {
+    greeting: 'Hello',
+    today: 'Today',
+    location: 'You are in',
+    noAddress: 'Address not available',
+    types: {
+      1: 'Infrastructure',
+      2: 'Cleaning',
+      3: 'Lighting',
+      4: 'Sanitation',
+      5: 'Traffic',
+      general: 'General',
+    },
+  },
+
+  layout: {
+    home: 'Home',
+    alerts: 'Alerts',
+    report: 'Report',
+    settings: 'Settings',
+    logout: 'Logout',
+    confirm: 'Do you really want to leave the application?',
+    success: 'You have logged out of your account.',
+  },
+  register: {
+    create: 'Create Account',
+    already: 'Already have an account?',
+    enter: 'Sign in',
+    name: 'Full Name',
+    password: 'Password',
+    register: 'Register',
+    success: 'User created successfully!',
+    error: 'Error creating user.',
+  },
 };

@@ -1,130 +1,135 @@
 <template>
-  <!--onda de fundo-->
   <q-layout view="lHh Lpr lFf">
-    <!--q page é usado p nao criar barra de rolagem e alinhar c os headers e footers do quasar-->
     <q-page-container>
-      <q-page class="column no-wrap overflow-hidden q-pa-md q-mt-md">
+      <q-page>
         <!--header da pagina-->
-        <div class="flex items-center justify-between full-width">
-          <q-btn flat color="grey-9" icon="arrow_back" to="/dashboard" size="15px" />
-          <span class="text-weight-regular tracking-normal text-h6"> Reportar Problema </span>
-          <q-btn flat color="grey-9" icon="info" to="/dashboard" size="15px" />
-        </div>
+        <div class="m-6 md:pt-10">
+          <div class="flex items-center justify-between full-width">
+            <q-btn flat color="grey-9" icon="arrow_back" to="/dashboard" size="15px" />
+            <span class="text-lg md:text-4xl"> Reportar Problema </span>
+            <q-btn flat color="grey-9" icon="info" to="/dashboard" size="15px" />
+          </div>
 
-        <!--separador-->
-        <q-separator color="grey-7" inset class="full-width q-my-md q-col-gutter-md" size="2px" />
+          <!--separador-->
+          <q-separator color="black" inset class="full-width q-my-md" />
 
-        <!--mapa-->
-        <GeoLocation />
-        <div class="text-center items-center full-width text-grey-9 my-font3">
-          <p>
+          <!--mapa-->
+          <GeoLocation />
+
+          <!--endereço-->
+          <!--<span class="flex flex-center text-center text-sm md:text-3xl py-4">
             {{ locationStore.address.road }}, {{ locationStore.address.houseNumber }} -
             {{ locationStore.address.neighbourhood }}
-          </p>
-        </div>
-        <!--titulo-->
-        <div>
-          <span class="text-weight-medium tracking-normal text-h6">Relate seu problema:</span>
-        </div>
+          </span>-->
 
-        <!--help-->
-        <div>
-          <q-btn
-            class="text-weight-light"
-            flat
-            style="margin-left: -15px"
-            no-caps
-            size="11px"
-            color="grey-8"
-            icon="help"
-            label="Não sei em qual categoria se encaixa meu problema!"
-            @click="lightDialog = true"
-          />
-        </div>
-        <help-dialog v-model="lightDialog" />
+          <!--titulo-->
+          <div class="mt-5">
+            <span class="text-bold text-base">Escolha a categoria:</span>
+          </div>
 
-        <!--row de botões pra selecionar a categorias do report-->
-        <div class="row q-col-gutter-md flex-center">
-          <!--opção em problem-->
-          <div v-for="opt in problemOptions" :key="opt.value" class="col">
-            <q-btn
-              :color="opt.color"
-              text-color="grey-9"
-              class="full-width shadow-3 transition-opacity duration-300"
-              rounded
-              :class="{
-                'opacity-30': reportForm.type !== null && reportForm.type !== opt.value,
-              }"
-              @click="reportForm.type = opt.value"
-            >
-              <div class="column items-center q-pt-md">
-                <!--separar os icons do botao pra conseguir ajustar individualmente o tamanho (fica padrao no btn)-->
-                <q-icon :name="opt.icon" size="24px" class="q-mb-md" />
+          <!--help-->
+          <div @click="lightDialog = true">
+            <q-icon name="help" size="12px" class="text-gray-500" />
+            <span class="text-[11px] font-light text-gray-500">
+              Não sei em qual categoria se encaixa meu problema!
+            </span>
+          </div>
+          <help-dialog v-model="lightDialog" />
+
+          <!--row de botões pra selecionar a categorias do report-->
+          <div class="row q-col-gutter-md flex-center">
+            <div v-for="opt in problemOptions" :key="opt.value" class="col">
+              <!--botao-->
+              <q-btn
+                bordered
+                style="border-radius: 25px"
+                :color="opt.color"
+                class="full-width transition-opacity duration-300"
+                :class="{
+                  'opacity-30': reportForm.type !== null && reportForm.type !== opt.value,
+                }"
+                @click="reportForm.type = opt.value"
+              >
+                <!--icon sepaeado-->
+                <div class="column items-center my-3">
+                  <q-icon :name="opt.icon" size="25px" :style="{ color: opt.color2 }" />
+                </div>
+              </q-btn>
+
+              <!--texto-->
+              <div
+                class="text-center text-[11.4px] transition-opacity duration-300"
+                :class="{ 'opacity-30': reportForm.type !== null && reportForm.type !== opt.value }"
+              >
+                {{ opt.label }}
               </div>
-            </q-btn>
-            <!--separar o texto tb pra nao ficar dentro do btn-->
-            <div
-              class="text-weight-regular q-mt-xs text-center text-[11.4px] transition-opacity duration-300"
-              :class="{ 'opacity-30': reportForm.type !== null && reportForm.type !== opt.value }"
-            >
-              {{ opt.label }}
             </div>
           </div>
-        </div>
 
-        <!--botao da foto-->
-        <div class="q-mt-md">
-          <span class="text-weight-regular">Fotos do problema</span>
+          <!--botao da foto-->
+          <div class="mt-4">
+            <!--titulo-->
+            <span class="text-base font-bold"> Tire sua Foto: </span>
 
-          <div class="row q-col-gutter-sm q-mt-xs">
-            <div
-              v-for="(photo, index) in locationStore.photos"
-              :key="index"
-              class="col-4 relative-position"
-            >
-              <q-img
-                :src="photo"
-                style="border-radius: 12px; height: 100px"
-                class="shadow-2"
-                cover
-              />
-              <q-btn
-                fab-mini
-                dense
-                color="red"
-                icon="close"
-                size="xs"
-                class="absolute top-0 right-0 q-ma-xs"
-                @click="locationStore.removePhoto(index)"
-              />
+            <div class="grid grid-cols-3 gap-3 mt-2">
+              <div
+                v-for="(photo, index) in locationStore.photos"
+                :key="index"
+                class="relative group"
+              >
+                <q-img
+                  :src="photo"
+                  class="h-[100px] w-full rounded-xl shadow-sm border border-gray-100"
+                  fit="cover"
+                />
+
+                <q-btn
+                  round
+                  dense
+                  color="negative"
+                  icon="close"
+                  size="sm"
+                  class="absolute -right-2"
+                  @click="locationStore.removePhoto(index)"
+                />
+              </div>
+
+              <div v-if="locationStore.photos.length < 3">
+                <q-btn
+                  color="grey-8"
+                  style="height: 100px; border-radius: 12px; border: 2px dashed #ccc"
+                  flat
+                  to="/cam"
+                  class="w-full h-[100px] !rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors"
+                >
+                  <div class="flex flex-col items-center">
+                    <q-icon name="add_a_photo" size="30px" />
+                    <span class="text-[10px] mt-1 font-medium">
+                      {{ locationStore.photos.length }}/3
+                    </span>
+                  </div>
+                </q-btn>
+              </div>
             </div>
 
-            <div class="col-4">
-              <q-btn
-                color="grey-3"
-                text-color="grey-7"
-                icon="add_a_photo"
-                class="full-width"
-                style="height: 100px; border-radius: 12px; border: 2px dashed #ccc"
-                flat
-                to="/cam"
-              />
-            </div>
+            <p
+              v-if="locationStore.photos.length === 3"
+              class="text-[10px] text-orange-600 mt-2 italic"
+            ></p>
           </div>
-        </div>
-        <!--descrição-->
-        <div class="q-mt-md">
-          <span class="text-weight-regular tracking-normal">Descreva o problema</span>
-          <div class="q-mt-sm">
+
+          <!--descrição-->
+          <div class="mt-4">
+            <!--titulo-->
+            <span class="text-bold text-base">Descreva o problema:</span>
+
+            <!--input-->
             <q-input
               outlined
-              bottom-slots
               v-model="text"
               type="textarea"
               rows="3"
-              rounded
               placeholder="Ex: 'O buraco está escondido por uma poça dágua'"
-              counter
               :dense="dense"
             >
               <template v-slot:append>
@@ -132,39 +137,31 @@
               </template>
             </q-input>
           </div>
-        </div>
 
-        <!--localização-->
-        <q-card flat bordered class="q-mt-md">
-          <q-item>
-            <q-item-section avatar>
-              <q-icon name="place" color="red" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>Localização aproximada</q-item-label>
+          <!--localização-->
+          <div class="mt-2">
+            <!--titulo-->
+            <span class="text-bold text-base">Localização:</span>
+            <q-item>
               <q-item-label caption
                 >{{ locationStore.address.road }}, {{ locationStore.address.houseNumber }} -
                 {{ locationStore.address.neighbourhood }}</q-item-label
               >
-            </q-item-section>
-            <q-item-section side>
-              <q-btn flat round icon="edit" />
-            </q-item-section>
-          </q-item>
-        </q-card>
+            </q-item>
+          </div>
 
-        <!--enviar-->
-        <q-btn
-          @click="submitReport"
-          no-caps
-          text-color="black"
-          color="primary"
-          class="full-width q-mt-md py-md"
-          rounded
-          to="/dashboard"
-        >
-          <span class="q-ml-md text-h6 text-weight-bold">Enviar Ocorrência</span></q-btn
-        >
+          <!--enviar-->
+          <q-btn
+            @click="submitReport"
+            no-caps
+            color="black"
+            class="full-width q-mt-md py-md"
+            rounded
+            to="/dashboard"
+          >
+            <span class="q-ml-md text-h6 text-weight-bold">Enviar Ocorrência</span></q-btn
+          >
+        </div>
 
         <!--ordem de hierarquia das page-->
       </q-page>
@@ -196,11 +193,11 @@ const reportForm = ref<ReportForm>({
 });
 
 const problemOptions = [
-  { label: 'Infraestrutura', value: '1', icon: 'build', color: 'warning' },
-  { label: 'Limpeza', value: '2', icon: 'delete_outline', color: 'positive' },
-  { label: 'Iluminação', value: '3', icon: 'flash_on', color: 'accent' },
-  { label: 'Saneamento', value: '4', icon: 'water_drop', color: 'info' },
-  { label: 'Trânsito', value: '5', icon: 'car_crash', color: 'warning' },
+  { label: 'Vias', value: '1', icon: 'build', color: 'warning', color2: '#a25107' },
+  { label: 'Limpeza', value: '2', icon: 'delete_outline', color: 'positive', color2: '#1E5128' },
+  { label: 'Luz', value: '3', icon: 'flash_on', color: 'accent', color2: '#a29607' },
+  { label: 'Agua', value: '4', icon: 'water_drop', color: 'info', color2: '#1a1a40' },
+  { label: 'Trânsito', value: '5', icon: 'car_crash', color: 'negative', color2: '#750000' },
 ];
 
 async function submitReport() {

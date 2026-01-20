@@ -4,44 +4,57 @@
       <router-view />
     </q-page-container>
 
-    <q-footer class="bg-white text-grey-8 q-py-md">
+    <q-footer class="bg-white text-grey-8 shadow-2">
       <q-toolbar>
-        <q-tabs
-          no-caps
-          shrink
-          active-color="primary"
-          indicator-color="transparent"
-          class="full-width"
-        >
-          <q-route-tab to="/dashboard" exact>
-            <template v-slot:default>
-              <q-icon name="home" size="44px" />
-              <div class="q-tab__label">Inicio</div>
-            </template>
-          </q-route-tab>
-          <q-route-tab to="/" exact>
-            <template v-slot:default>
-              <q-icon name="notifications" size="44px" />
-              <div class="q-tab__label">Avisos</div>
-            </template>
-          </q-route-tab>
-          <div class="flex column center text-center">
-            <q-btn rounded unelevated color="primary" icon="add" size="25px" to="/report" />
-            <span class="text-h7 text-bold">Reportar</span>
-          </div>
-          <q-route-tab to="/ajustes" exact>
-            <template v-slot:default>
-              <q-icon name="settings" size="44px" />
-              <div class="q-tab__label">Ajustes</div>
-            </template>
-          </q-route-tab>
-          <q-tab @click="handleLogout">
-            <template v-slot:default>
-              <q-icon name="logout" size="44px" />
-              <div class="q-tab__label">Sair</div>
-            </template>
-          </q-tab>
-        </q-tabs>
+        <div class="w-full max-w-scheen-lg flex justify-around items-end pb-2 mt-1">
+          <!--home-->
+          <q-tabs no-caps active-color="primary" indicator-color="transparent" class="w-full" dense>
+            <q-route-tab to="/dashboard" exact class="min-w-15 px-1">
+              <template v-slot:default>
+                <q-icon name="home" size="35px" />
+                <div class="text-[15px]">{{ $t('layout.home') }}</div>
+              </template>
+            </q-route-tab>
+
+            <!--avisos-->
+            <q-route-tab to="/" exact class="min-w-15 px-1">
+              <template v-slot:default>
+                <q-icon name="notifications" size="32px" />
+                <div class="text-[15px]">{{ $t('layout.alerts') }}</div>
+              </template>
+            </q-route-tab>
+
+            <!--report-->
+            <div class="flex column center text-center">
+              <q-btn
+                rounded
+                unelevated
+                color="primary"
+                icon="add"
+                size="25px"
+                to="/report"
+                class="min-w-15 px-1"
+              />
+              <span class="text-bold">{{ $t('layout.report') }}</span>
+            </div>
+
+            <!--ajustes-->
+            <q-route-tab to="/ajustes" exact class="min-w-15 px-1">
+              <template v-slot:default>
+                <q-icon name="settings" size="32px" />
+                <div class="text-[15px]">{{ $t('layout.settings') }}</div>
+              </template>
+            </q-route-tab>
+
+            <!--sair-->
+            <q-tab @click="handleLogout" class="min-w-15 px-1">
+              <template v-slot:default>
+                <q-icon name="logout" size="32px" />
+                <div class="text-[15px]">{{ $t('layout.logout') }}</div>
+              </template>
+            </q-tab>
+          </q-tabs>
+        </div>
       </q-toolbar>
     </q-footer>
   </q-layout>
@@ -50,29 +63,31 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import { useAuthStore } from 'src/stores/auth';
+import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
 const $q = useQuasar();
+const authStore = useAuthStore();
+const { t } = useI18n();
 
+//logout
 const handleLogout = () => {
   $q.dialog({
-    title: 'Sair',
-    message: 'Deseja realmente sair do aplicativo?',
+    title: t('layout.logout'),
+    message: t('layout.confirm'),
     cancel: true,
     persistent: true,
   }).onOk(() => {
-    // 1. Remove os dados de autenticação do LocalStorage
-    localStorage.removeItem('asten_token');
-    localStorage.removeItem('user_data');
+    //chama o logout
+    authStore.logout();
 
-    // 2. Notifica o usuário
     $q.notify({
       color: 'info',
-      message: 'Você saiu da conta.',
+      message: t('layout.success'),
       icon: 'logout',
     });
 
-    // 3. Redireciona para a página de login (rota '/')
     void router.push('/');
   });
 };

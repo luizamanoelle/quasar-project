@@ -24,31 +24,32 @@
             <q-form @submit="handleLogin" class="flex flex-col gap-2 items-center">
               <q-input
                 v-model="loginForm.email"
-                type="email"
                 class="w-full max-w-sm"
-                :label="$t('login.email')"
+                label="E-mail"
+                type="email"
                 outlined
                 rounded
                 dense
-                :rules="[(val) => !!val || $t('login.requiredEmail')]"
+                :rules="[(val) => !!val || 'E-mail é obrigatório']"
               />
               <!--o val é o conteudo digitado, se for false, vazio, dispara-->
 
               <q-input
                 v-model="loginForm.senha"
                 class="w-full max-w-sm"
-                :label="$t('login.password')"
+                label="Senha"
                 type="password"
                 outlined
                 rounded
                 dense
-                :rules="[(val) => !!val || $t('login.requiredPassword')]"
+                :rules="[(val) => !!val || 'Senha é obrigatória']"
               />
 
               <!--botão-->
               <div class="w-full max-w-xs md:max-w-sm">
                 <q-btn
-                  :label="$t('login.btnEnter')"
+                  label="Entrar"
+                  icon="login"
                   type="submit"
                   color="black"
                   rounded
@@ -65,14 +66,13 @@
 </template>
 
 <script setup lang="ts">
+//import
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import catImage from 'assets/login.svg';
 import { useAuthStore } from 'src/stores/auth';
-import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
 const $q = useQuasar();
 const router = useRouter();
 const loading = ref(false);
@@ -85,25 +85,22 @@ const loginForm = ref({
 });
 
 const handleLogin = async () => {
-  //carregamento
   loading.value = true;
   try {
     //chama a store e passa os dados
     const success = await authStore.login(loginForm.value);
 
     if (success) {
-      //se deu certo vai pro dashbaord
-      $q.notify({ type: 'positive', message: t('login.success', { name: authStore.user.nome }) });
+      $q.notify({ type: 'positive', message: `Bem-vinda, ${authStore.user.nome}!` });
       await router.push('/dashboard');
     } else {
-      //se falhar avisa
-      $q.notify({ type: 'negative', message: t('login.fail') });
+      $q.notify({ type: 'negative', message: 'E-mail ou senha incorretos.' });
     }
   } catch (error) {
     console.error('Erro no login:', error);
     $q.notify({
       color: 'negative',
-      message: t('login.error'),
+      message: 'Erro ao conectar com o servidor.',
       icon: 'error',
     });
   } finally {

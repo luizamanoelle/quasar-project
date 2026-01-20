@@ -1,57 +1,71 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
-      <q-page class="flex flex-col q-pa-md items-center justify-center bg-gray-50">
-        <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-          <div class="text-center q-mb-xl">
-            <h1 class="text-2xl font-bold text-gray-900">Criar Conta</h1>
-            <p class="text-gray-500">Cadastre-se para começar a usar o Asten City</p>
+      <q-page>
+        <div class="flex flex-col full-width min-h-screen md:flex-row md:p-25 mb-8">
+          <!--image-->
+          <div class="w-full max-w-sm md:max-w-lg">
+            <q-img :src="registerImage" class="md:scale-130" fit="contain" />
           </div>
 
-          <q-form @submit="handleRegister" class="flex flex-col gap-4">
-            <q-input
-              v-model="userForm.nome"
-              label="Nome Completo"
-              outlined
-              rounded
-              dense
-              :rules="[(val) => !!val || 'Nome é obrigatório']"
-            />
+          <!--titulo-->
+          <div class="mx-8 mb-4">
+            <span class="text-2xl md:text-3xl font-bold">{{ $t('register.create') }}</span>
+            <p class="text-grey-7">
+              {{ $t('register.already') }}
+              <router-link to="/login" class="text-purple font-bold"
+                >{{ $t('register.enter') }}
+              </router-link>
+            </p>
+          </div>
 
-            <q-input
-              v-model="userForm.email"
-              label="E-mail"
-              type="email"
-              outlined
-              rounded
-              dense
-              :rules="[(val) => !!val || 'E-mail é obrigatório']"
-            />
-
-            <q-input
-              v-model="userForm.senha"
-              label="Senha"
-              type="password"
-              outlined
-              rounded
-              dense
-              :rules="[(val) => !!val || 'Senha é obrigatória']"
-            />
-
-            <div class="q-mt-md">
-              <q-btn
-                label="Cadastrar"
-                type="submit"
-                color="primary"
+          <div class="mx-8">
+            <q-form @submit="handleRegister" class="flex flex-col gap-2 items-center">
+              <q-input
+                v-model="userForm.nome"
+                class="w-full max-w-sm"
+                :label="$t('register.name')"
+                outlined
                 rounded
-                class="full-width py-3 font-bold"
-                :loading="loading"
+                dense
+                :rules="[(val) => !!val || 'Nome é obrigatório']"
               />
-            </div>
-          </q-form>
 
-          <div class="text-center q-mt-lg">
-            <q-btn flat no-caps label="Já tenho uma conta" to="/" color="grey-7" />
+              <q-input
+                v-model="userForm.email"
+                class="w-full max-w-sm"
+                label="E-mail"
+                type="email"
+                outlined
+                rounded
+                dense
+                :rules="[(val) => !!val || 'E-mail é obrigatório']"
+              />
+
+              <q-input
+                v-model="userForm.senha"
+                class="w-full max-w-sm"
+                :label="$t('register.password')"
+                type="password"
+                outlined
+                rounded
+                dense
+                :rules="[(val) => !!val || 'Senha é obrigatória']"
+              />
+
+              <!--botão-->
+              <div class="w-full max-w-xs md:max-w-sm">
+                <q-btn
+                  icon="login"
+                  :label="$t('register.register')"
+                  type="submit"
+                  color="black"
+                  rounded
+                  class="full-width font-bold text-white"
+                  :loading="loading"
+                />
+              </div>
+            </q-form>
           </div>
         </div>
       </q-page>
@@ -63,7 +77,10 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { api } from 'src/boot/axios'; //
+import { api } from 'src/boot/axios';
+import registerImage from 'assets/register.svg';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const $q = useQuasar();
 const router = useRouter();
@@ -72,29 +89,26 @@ const loading = ref(false);
 const userForm = ref({
   nome: '',
   email: '',
-  senha: '', // Nota: Em um app real, a senha nunca deve ficar clara no db.json
+  senha: '',
 });
 
 const handleRegister = async () => {
+  loading.value = true;
   try {
-    loading.value = true;
-
-    // Envia o novo usuário para a coleção "usuarios" do db.json
     await api.post('/usuarios', userForm.value);
 
     $q.notify({
       color: 'positive',
-      message: 'Usuário criado com sucesso!',
+      message: t('register.success'),
       icon: 'check',
     });
 
-    // Redireciona para o Dashboard ou Login
     void router.push('/dashboard');
-  } catch (error) {
-    console.error('Erro ao cadastrar:', error);
+  } catch (e) {
+    console.error('Erro ao cadastrar:', e);
     $q.notify({
       color: 'negative',
-      message: 'Erro ao criar usuário.',
+      message: t('register.error'),
       icon: 'error',
     });
   } finally {

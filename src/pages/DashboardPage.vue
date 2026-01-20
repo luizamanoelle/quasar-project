@@ -7,8 +7,10 @@
         <!--header-->
         <div class="m-6 md:pt-10">
           <div class="text-center">
-            <span class="text-2xl md:text-4xl">Olá, {{ authStore.user?.nome || 'User' }}</span>
-            <p class="text-grey-7">Hoje {{ dia }} {{ month }}</p>
+            <span class="text-2xl md:text-4xl"
+              >{{ $t('dashboard.greeting') }}, {{ authStore.user?.nome || 'User' }}</span
+            >
+            <p class="text-grey-7">{{ $t('dashboard.today') }} {{ day }} {{ month }}</p>
           </div>
 
           <q-separator color="black" inset class="full-width q-my-md" />
@@ -19,7 +21,7 @@
 
         <!--localização---->
         <div class="text-center text-bold text-xl md:text-3xl py-4">
-          <span>Você está em {{ locationStore.address.city }}</span>
+          <span>{{ $t('dashboard.location') }} {{ locationStore.address.city }}</span>
         </div>
 
         <!--cards-->
@@ -32,8 +34,8 @@
           </div>
 
           <!-- se o loading terminar e as ocorrencias nao estiverem vazias mostra-->
-          <template v-else-if="ocorrencias.length > 0">
-            <div v-for="item in ocorrencias" :key="item.id">
+          <template v-else-if="occurrence.length > 0">
+            <div v-for="item in occurrence" :key="item.id">
               <q-card
                 bordered
                 class="bg-white h-full flex flex-col overflow-hidden border-gray-100 p-2"
@@ -83,15 +85,14 @@ import { useLocationStore } from 'src/stores/location';
 import { ref, onMounted } from 'vue';
 import { api } from 'src/boot/axios';
 import { useAuthStore } from 'src/stores/auth';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 interface Ocorrência {
-  id: string | number;
-  tipo_id: string | number;
+  id: number;
+  tipo_id: number;
   localizacao?: {
     endereco: string;
-    bairro?: string;
-    lat?: number;
-    lng?: number;
   };
   imagens?: string[];
   data_criacao: string;
@@ -101,46 +102,32 @@ interface Ocorrência {
 const locationStore = useLocationStore();
 const authStore = useAuthStore();
 
-const dataAtual = new Date();
-const dia = dataAtual.getDate();
-const month = dataAtual.toLocaleDateString('pt-BR', { month: 'short' });
-const ocorrencias = ref<Ocorrência[]>([]);
+const today = new Date();
+const day = today.getDate();
+const month = today.toLocaleDateString(undefined, { month: 'short' });
+
+const occurrence = ref<Ocorrência[]>([]);
 const loading = ref(true);
 
+const getStatusColor = (status: number) =>
+  ({ 1: 'negative', 2: 'warning', 3: 'positive' })[status] || 'grey';
+
+const getTipoNome = (id: number | string) => {
+  const key = `dashboard.types.${id}`;
+  // t() retorna a tradução; se não achar a chave do ID, retorna 'General'
+  return t(key) !== key ? t(key) : t('dashboard.types.general');
+};
+
 const fetchOcorrencias = async () => {
+  loading.value = true;
   try {
-    loading.value = true;
     const res = await api.get('/ocorrencias');
-    ocorrencias.value = res.data;
-  } catch (error) {
-    console.error('Erro ao buscar ocorrências', error);
+    occurrence.value = res.data;
+  } catch (e) {
+    console.error('Erro ao buscar ocorrências', e);
   } finally {
     loading.value = false;
   }
-};
-
-const getStatusColor = (status: number) => {
-  switch (status) {
-    case 1:
-      return 'negative'; // Vermelho (Aberto)
-    case 2:
-      return 'warning'; // Amarelo (Em análise)
-    case 3:
-      return 'positive'; // Verde (Resolvido)
-    default:
-      return 'grey';
-  }
-};
-
-const getTipoNome = (tipoID: number | string) => {
-  const tipos: Record<string, string> = {
-    '1': 'Infraestrutura',
-    '2': 'Limpeza',
-    '3': 'Iluminação',
-    '4': 'Saneamento',
-    '5': 'Trânsito',
-  };
-  return tipos[String(tipoID)] || 'Nome';
 };
 
 onMounted(() => {
