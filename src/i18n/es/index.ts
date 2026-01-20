@@ -6,4 +6,18 @@ export default {
       'Plataforma para el seguimiento de la infraestructura urbana e implicación ciudadana.',
     btnStart: 'Empezar',
   },
+
+  login: {
+    title: 'Iniciar Sesión',
+    noAccount: '¿No tienes una cuenta?',
+    createAccount: 'Crear cuenta',
+    email: 'Correo electrónico',
+    password: 'Contraseña',
+    btnEnter: 'Entrar',
+    requiredEmail: 'El correo es obligatorio',
+    requiredPassword: 'La contraseña es obligatória',
+    success: '¡Bienvenida, {name}!',
+    fail: 'Correo o contraseña incorrectos.',
+    error: 'Error al conectar con el servidor.',
+  },
 };

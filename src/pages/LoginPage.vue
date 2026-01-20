@@ -10,10 +10,12 @@
 
           <!--titulo e criar conta-->
           <div class="mx-8 mb-4">
-            <span class="text-2xl md:text-3xl font-bold">Entrar</span>
+            <span class="text-2xl md:text-3xl font-bold">{{ $t('login.title') }}</span>
             <p class="text-grey-7">
-              Não tem uma conta?
-              <router-link to="/register" class="text-purple font-bold"> Criar conta </router-link>
+              {{ $t('login.noAccount') }}
+              <router-link to="/register" class="text-purple font-bold"
+                >{{ $t('login.createAccount') }}
+              </router-link>
             </p>
           </div>
 
@@ -22,31 +24,31 @@
             <q-form @submit="handleLogin" class="flex flex-col gap-2 items-center">
               <q-input
                 v-model="loginForm.email"
-                class="w-full max-w-sm"
-                label="E-mail"
                 type="email"
+                class="w-full max-w-sm"
+                :label="$t('login.email')"
                 outlined
                 rounded
                 dense
-                :rules="[(val) => !!val || 'E-mail é obrigatório']"
+                :rules="[(val) => !!val || $t('login.requiredEmail')]"
               />
               <!--o val é o conteudo digitado, se for false, vazio, dispara-->
 
               <q-input
                 v-model="loginForm.senha"
                 class="w-full max-w-sm"
-                label="Senha"
+                :label="$t('login.password')"
                 type="password"
                 outlined
                 rounded
                 dense
-                :rules="[(val) => !!val || 'Senha é obrigatória']"
+                :rules="[(val) => !!val || $t('login.requiredPassword')]"
               />
 
               <!--botão-->
               <div class="w-full max-w-xs md:max-w-sm">
                 <q-btn
-                  label="Entrar"
+                  :label="$t('login.btnEnter')"
                   type="submit"
                   color="black"
                   rounded
@@ -66,10 +68,11 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { api } from 'src/boot/axios';
 import catImage from 'assets/login.svg';
 import { useAuthStore } from 'src/stores/auth';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const $q = useQuasar();
 const router = useRouter();
 const loading = ref(false);
@@ -82,24 +85,25 @@ const loginForm = ref({
 });
 
 const handleLogin = async () => {
+  //carregamento
   loading.value = true;
   try {
     //chama a store e passa os dados
     const success = await authStore.login(loginForm.value);
 
     if (success) {
-      // 2. Se deu certo, redireciona para a Home/Dashboard
-      $q.notify({ type: 'positive', message: `Bem-vinda, ${authStore.user.nome}!` });
-      router.push('/dashboard');
+      //se deu certo vai pro dashbaord
+      $q.notify({ type: 'positive', message: t('login.success', { name: authStore.user.nome }) });
+      await router.push('/dashboard');
     } else {
-      // 3. Se falhou, avisa o usuário
-      $q.notify({ type: 'negative', message: 'E-mail ou senha incorretos.' });
+      //se falhar avisa
+      $q.notify({ type: 'negative', message: t('login.fail') });
     }
   } catch (error) {
     console.error('Erro no login:', error);
     $q.notify({
       color: 'negative',
-      message: 'Erro ao conectar com o servidor.',
+      message: t('login.error'),
       icon: 'error',
     });
   } finally {

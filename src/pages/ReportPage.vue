@@ -209,7 +209,7 @@ async function submitReport() {
       usuario_id: 1,
       tipo_id: reportForm.value.type,
       descricao: text.value,
-      localização: {
+      localizacao: {
         endereco: `${locationStore.address.road}, ${locationStore.address.houseNumber}`,
         bairro: locationStore.address.neighbourhood,
         lat: locationStore.address.lat,

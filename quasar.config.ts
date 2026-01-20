@@ -96,6 +96,15 @@ export default defineConfig((ctx) => {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#devserver
     devServer: {
+      proxy: {
+    '/nominatim': {
+      target: 'https://nominatim.openstreetmap.org',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/nominatim': ''
+      }
+    }
+  },
       //https: true,
       open: true, // opens browser window automatically
       allowedHosts: ['pc-vitoria-avell'],

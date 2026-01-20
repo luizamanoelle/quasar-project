@@ -3,86 +3,74 @@
   <q-layout view="lHh Lpr lFf">
     <!--q page é usado p nao criar barra de rolagem e alinhar c os headers e footers do quasar-->
     <q-page-container>
-      <q-page class="column no-wrap overflow-hidden q-pa-md">
+      <q-page>
         <!--header-->
-        <div class="text-center q-pt-lg">
-          <span class="my-font tracking-normal text-h5">Olá, Luiza</span>
-          <p class="text-grey-7">Hoje {{ dia }} {{ month }}</p>
+        <div class="m-6 md:pt-10">
+          <div class="text-center">
+            <span class="text-2xl md:text-4xl">Olá, {{ authStore.user?.nome || 'User' }}</span>
+            <p class="text-grey-7">Hoje {{ dia }} {{ month }}</p>
+          </div>
+
+          <q-separator color="black" inset class="full-width q-my-md" />
+
+          <!--mapa-->
+          <GeoLocation />
         </div>
 
-        <q-separator color="black" inset class="full-width q-my-md" />
-
-        <!--mapa-->
-        <GeoLocation />
         <!--localização---->
-        <div class="text-center items-center full-width text-weight-bold q-my-md text-h5">
-          <p>Você está em {{ locationStore.address.city }}</p>
+        <div class="text-center text-bold text-xl md:text-3xl py-4">
+          <span>Você está em {{ locationStore.address.city }}</span>
         </div>
-
-        <!--loading-->
 
         <!--cards-->
-        <div class="row q-col-gutter-sm q-mt-xs">
-          <div v-if="loading" class="flex flex-center q-pa-lg">
+        <div
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-full px-6"
+        >
+          <!--loading-->
+          <div v-if="loading" class="flex flex-center">
             <q-spinner-dots color="primary" size="40px" />
           </div>
 
+          <!-- se o loading terminar e as ocorrencias nao estiverem vazias mostra-->
           <template v-else-if="ocorrencias.length > 0">
-            <div v-for="item in ocorrencias" :key="item.id" class="col-6">
+            <div v-for="item in ocorrencias" :key="item.id">
               <q-card
-                v-for="item in ocorrencias"
-                :key="item.id"
-                flat
                 bordered
-                class="rounded-2xl overflow-hidden border-gray-100 bg-white"
+                class="bg-white h-full flex flex-col overflow-hidden border-gray-100 p-2"
               >
                 <q-img
                   v-if="item.imagens && item.imagens.length > 0"
                   :src="item.imagens[0]"
-                  height="160px"
-                >
-                </q-img>
-                <div class="absolute right-2 bottom-25 bg-transparent p-0">
-                  <q-badge
-                    :color="getStatusColor(item.status)"
-                    class="font-bold rounded text-black"
-                  >
-                    {{ item.status === 1 ? 'ABERTO' : 'RESOLVIDO' }}
-                  </q-badge>
-                </div>
+                  class="h-35"
+                  fit="cover"
+                />
 
-                <q-card-section class="p-1">
-                  <div class="flex flex-col">
-                    <span class="text-caption uppercase tracking-wider text-h7">
+                <q-card-section class="q-pa-sm">
+                  <div class="flex justify-between items-center no-wrap full-width">
+                    <div class="text-xs font-bold uppercase text-black truncate">
                       {{ getTipoNome(item.tipo_id) }}
-                    </span>
-
-                    <div class="flex items-center text-weight-light">
-                      <span class="text-xs">
-                        {{ item.localizacao?.endereco || 'Endereço não disponível' }}
-                      </span>
                     </div>
+
+                    <div
+                      :class="`bg-${getStatusColor(item.status)}`"
+                      class="rounded-full w-3 h-3 ml-2 flex-shrink-0"
+                    ></div>
+                  </div>
+
+                  <div class="text-xs py-1 text-gray-600 full-width">
+                    {{ item.localizacao?.endereco || 'Endereço não disponível' }}
                   </div>
                 </q-card-section>
 
-                <q-card-actions class="q-ml-sm px-4 py-5 flex justify-between items-center">
-                  <span class="text-xs text-caption">
+                <q-card-actions class="flex justify-between items-center mt-auto q-px-sm q-pb-sm">
+                  <span class="text-xs text-gray-500">
                     {{ item.data_criacao }}
                   </span>
-                  <q-btn
-                    flat
-                    color="primary"
-                    label="Ver mais"
-                    no-caps
-                    icon-right="chevron_right"
-                    class="text-sm font-bold"
-                  />
                 </q-card-actions>
               </q-card>
             </div>
           </template>
         </div>
-
         <!--ordem de hierarquia das page-->
       </q-page>
     </q-page-container>
@@ -94,6 +82,7 @@ import GeoLocation from 'src/components/GeoLocation.vue';
 import { useLocationStore } from 'src/stores/location';
 import { ref, onMounted } from 'vue';
 import { api } from 'src/boot/axios';
+import { useAuthStore } from 'src/stores/auth';
 
 interface Ocorrência {
   id: string | number;
@@ -110,6 +99,7 @@ interface Ocorrência {
 }
 
 const locationStore = useLocationStore();
+const authStore = useAuthStore();
 
 const dataAtual = new Date();
 const dia = dataAtual.getDate();
@@ -132,11 +122,13 @@ const fetchOcorrencias = async () => {
 const getStatusColor = (status: number) => {
   switch (status) {
     case 1:
-      return 'negative'; //aberto
+      return 'negative'; // Vermelho (Aberto)
     case 2:
-      return 'primary'; //analise
+      return 'warning'; // Amarelo (Em análise)
     case 3:
-      return 'positive'; //concluido
+      return 'positive'; // Verde (Resolvido)
+    default:
+      return 'grey';
   }
 };
 
