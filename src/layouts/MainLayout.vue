@@ -11,25 +11,17 @@
           <q-tabs no-caps active-color="primary" indicator-color="transparent" class="w-full" dense>
             <q-route-tab to="/dashboard" exact class="min-w-15 px-1">
               <template v-slot:default>
-                <q-icon name="home" size="35px" />
+                <q-icon name="las la-home" size="35px" />
                 <div class="text-[15px]">{{ $t('layout.home') }}</div>
-              </template>
-            </q-route-tab>
-
-            <!--avisos-->
-            <q-route-tab to="/" exact class="min-w-15 px-1">
-              <template v-slot:default>
-                <q-icon name="notifications" size="32px" />
-                <div class="text-[15px]">{{ $t('layout.alerts') }}</div>
               </template>
             </q-route-tab>
 
             <!--report-->
             <div class="flex column center text-center">
               <q-btn
-                rounded
+                round
                 unelevated
-                color="primary"
+                color="black"
                 icon="add"
                 size="25px"
                 to="/report"
@@ -37,14 +29,6 @@
               />
               <span class="text-bold">{{ $t('layout.report') }}</span>
             </div>
-
-            <!--ajustes-->
-            <q-route-tab to="/ajustes" exact class="min-w-15 px-1">
-              <template v-slot:default>
-                <q-icon name="settings" size="32px" />
-                <div class="text-[15px]">{{ $t('layout.settings') }}</div>
-              </template>
-            </q-route-tab>
 
             <!--sair-->
             <q-tab @click="handleLogout" class="min-w-15 px-1">
@@ -81,14 +65,13 @@ const handleLogout = () => {
   }).onOk(() => {
     //chama o logout
     authStore.logout();
+    void router.push('/');
 
     $q.notify({
       color: 'info',
       message: t('layout.success'),
       icon: 'logout',
     });
-
-    void router.push('/');
   });
 };
 </script>

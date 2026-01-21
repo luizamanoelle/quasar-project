@@ -92,7 +92,13 @@ const handleLogin = async () => {
 
     if (success) {
       $q.notify({ type: 'positive', message: `Bem-vinda, ${authStore.user.nome}!` });
-      await router.push('/dashboard');
+      const userRole = authStore.user?.role;
+
+      if (userRole === 'admin') {
+        void router.push('admin/dashboard');
+      } else {
+        void router.push('cidadao/dashboard');
+      }
     } else {
       $q.notify({ type: 'negative', message: 'E-mail ou senha incorretos.' });
     }

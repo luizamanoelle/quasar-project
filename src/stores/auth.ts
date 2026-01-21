@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { api } from 'src/boot/axios';
 
-// 1. Definimos o "formato" das credenciais
 interface LoginCredentials {
   email: string;
   senha: string;
@@ -14,7 +13,6 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    // 2. Aplicamos o tipo ao parâmetro 'credentials'
     async login(credentials: LoginCredentials) {
       try {
         const res = await api.get(`/usuarios?email=${credentials.email}`);

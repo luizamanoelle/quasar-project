@@ -90,6 +90,7 @@ const userForm = ref({
   nome: '',
   email: '',
   senha: '',
+  role: 'cidadao',
 });
 
 const handleRegister = async () => {

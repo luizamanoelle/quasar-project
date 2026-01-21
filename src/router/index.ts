@@ -35,15 +35,20 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
   Router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('asten_token');
-    const publicPages = ['/', '/register', '/login']; // Páginas que não precisam de login
+    const userJson = localStorage.getItem('user_data');
+
+    const userData = userJson ? JSON.parse(userJson) : null;
+    const userRole = userData?.role;
+
+    const publicPages = ['/', '/register', '/login'];
     const authRequired = !publicPages.includes(to.path);
 
     if (authRequired && !token) {
       return next('/');
     }
 
-    if (token && publicPages.includes(to.path)) {
-      return next('/dashboard'); // Redireciona para dashboard se já estiver logado
+    if (to.meta.role && to.meta.role != userRole) {
+      return next(userRole === 'admin' ? 'admin/dashboard' : 'cidadao/dashboard');
     }
 
     next();
@@ -51,3 +56,27 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
   return Router;
 });
+
+/*Router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('asten_token');
+    const userRole = localStorage.getItem('user_role');
+
+    const publicPages = ['/', '/register', '/login'];
+    const authRequired = !publicPages.includes(to.path);
+
+    //se nao tive logado fica em /
+    if (authRequired && !token) {
+      return next('/');
+    }
+
+    //se logar verifica pra onde vai mandar
+    if (token && publicPages.includes(to.path)) {
+      return next(userRole == 'admin' ? 'admin/dashboard' : 'cidadao/dashboard');
+    }
+
+    //se tentar acessar uma page que nao o pertence manda pro dashboard respetivo
+    if (to.meta.role && to.meta.role != userRole) {
+      return next(userRole == 'admin' ? 'admin/dashboard' : 'cidadao/dashboard');
+    }
+    next();
+  });*/

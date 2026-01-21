@@ -4,31 +4,22 @@
       "id": "1",
       "nome": "Luiza Manoelle",
       "email": "luiza@exemplo.com",
-      "senha": "123"
+      "senha": "123",
+      "role": "cidadao"
     },
     {
       "id": "e3c4",
       "nome": "teste",
       "email": "teste@teste",
-      "senha": "teste"
+      "senha": "teste",
+      "role": "cidadao"
     },
     {
-      "id": "66a2",
-      "nome": "Ken",
-      "email": "ken@gmail.com",
-      "senha": "123"
-    },
-    {
-      "id": "a8da",
-      "nome": "Fulano",
-      "email": "fulano@123",
-      "senha": "123"
-    },
-    {
-      "id": "cb7e",
-      "nome": "Beltrano",
-      "email": "beltrano@123",
-      "senha": "123"
+      "id": "e3c4",
+      "nome": "admin",
+      "email": "admin@admin",
+      "senha": "admin",
+      "role": "admin"
     }
   ],
   "tipos_ocorrencia": [
