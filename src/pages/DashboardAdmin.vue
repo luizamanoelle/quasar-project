@@ -26,7 +26,7 @@
               <template v-slot:body-cell-status="props">
                 <q-td :props="props">
                   <q-badge :color="getStatusColor(props.value)">
-                    {{ props.value }}
+                    {{ getStatusLabel(props.value) }}
                   </q-badge>
                 </q-td>
               </template>
@@ -93,6 +93,11 @@ const fetchReport = async () => {
 
 const getStatusColor = (status: number) =>
   ({ 1: 'negative', 2: 'warning', 3: 'positive' })[status] || 'grey';
+
+const getStatusLabel = (status: number) => {
+  const labels: Record<number, string> = { 1: 'Pendente', 2: 'Em análise', 3: 'Resolvido' };
+  return labels[status] || 'Desconhecido';
+};
 
 onMounted(() => {
   void fetchReport();
