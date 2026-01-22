@@ -48,7 +48,7 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     }
 
     if (to.meta.role && to.meta.role != userRole) {
-      return next(userRole === 'admin' ? 'admin/dashboard' : 'cidadao/dashboard');
+      return next(userRole === 'admin' ? 'admin/dashboard' : 'citizen/dashboard');
     }
 
     next();
@@ -71,12 +71,12 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
     //se logar verifica pra onde vai mandar
     if (token && publicPages.includes(to.path)) {
-      return next(userRole == 'admin' ? 'admin/dashboard' : 'cidadao/dashboard');
+      return next(userRole == 'admin' ? 'admin/dashboard' : 'citizen/dashboard');
     }
 
     //se tentar acessar uma page que nao o pertence manda pro dashboard respetivo
     if (to.meta.role && to.meta.role != userRole) {
-      return next(userRole == 'admin' ? 'admin/dashboard' : 'cidadao/dashboard');
+      return next(userRole == 'admin' ? 'admin/dashboard' : 'citizen/dashboard');
     }
     next();
   });*/

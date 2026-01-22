@@ -5,7 +5,7 @@
         <div class="m-6 md:pt-10">
           <div class="text-center">
             <span class="text-2xl md:text-4xl"
-              >{{ $t('dashboard.greeting') }}, {{ authStore.user?.nome || 'User' }}</span
+              >{{ $t('dashboard.greeting') }}, {{ authStore.user?.name || 'User' }}</span
             >
             <p class="text-grey-7">{{ $t('dashboard.today') }} {{ day }} {{ month }}</p>
           </div>
@@ -30,6 +30,18 @@
                   </q-badge>
                 </q-td>
               </template>
+
+              <template v-slot:body-cell-action="props">
+                <q-td :props="props">
+                  <q-btn
+                    flat
+                    round
+                    color="primary"
+                    icon="visibility"
+                    @click="goToDetails(props.row.id)"
+                  />
+                </q-td>
+              </template>
             </q-table>
           </div>
         </div>
@@ -42,6 +54,7 @@
 import { useAuthStore } from 'src/stores/auth';
 import { onMounted, ref } from 'vue';
 import { api } from 'src/boot/axios';
+import { useRouter } from 'vue-router';
 
 interface Coluna {
   name: string;
@@ -62,6 +75,7 @@ interface Ocorrência {
   status: number;
 }
 
+const router = useRouter();
 const authStore = useAuthStore();
 
 const today = new Date();
@@ -71,12 +85,16 @@ const month = today.toLocaleDateString(undefined, { month: 'short' });
 const loading = ref(false);
 const occurrence = ref<Ocorrência[]>([]);
 
+const goToDetails = (id: number) => {
+  void router.push(`/admin/report/${id}`);
+};
+
 const columns: Coluna[] = [
   { name: 'id', align: 'left', label: 'id', field: 'id' },
   { name: 'type', label: 'Categoria', field: 'tipo_id', align: 'left' },
   { name: 'status', label: 'Status', field: 'status', align: 'center' },
   { name: 'data', label: 'Data', field: 'data_criacao', align: 'center' },
-  { name: 'action', label: 'Ações', field: 'action', align: 'right' },
+  { name: 'action', label: 'Ações', field: 'id', align: 'right' },
 ];
 
 const fetchReport = async () => {

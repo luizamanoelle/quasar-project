@@ -24,7 +24,7 @@
           </p>
 
           <!--botão-->
-          <div class="w-full max-w-xs md:max-w-sm">
+          <div class="w-full max-w-xs md:max-w-sm lg:max-w-lg">
             <q-btn
               :label="$t('index.btnStart')"
               color="black"

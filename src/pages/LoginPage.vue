@@ -2,7 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
       <q-page>
-        <div class="flex flex-col full-width min-h-screen md:flex-row md:p-25">
+        <div class="flex flex-col full-width min-h-screen md:flex-row md:p-25 md:items-center">
           <!--image-->
           <div class="w-full max-w-sm md:max-w-lg">
             <q-img :src="catImage" class="md:scale-130" fit="contain" />
@@ -17,47 +17,47 @@
                 >{{ $t('login.createAccount') }}
               </router-link>
             </p>
-          </div>
 
-          <div class="mx-8">
-            <!--form de login-->
-            <q-form @submit="handleLogin" class="flex flex-col gap-2 items-center">
-              <q-input
-                v-model="loginForm.email"
-                class="w-full max-w-sm"
-                label="E-mail"
-                type="email"
-                outlined
-                rounded
-                dense
-                :rules="[(val) => !!val || 'E-mail é obrigatório']"
-              />
-              <!--o val é o conteudo digitado, se for false, vazio, dispara-->
-
-              <q-input
-                v-model="loginForm.senha"
-                class="w-full max-w-sm"
-                label="Senha"
-                type="password"
-                outlined
-                rounded
-                dense
-                :rules="[(val) => !!val || 'Senha é obrigatória']"
-              />
-
-              <!--botão-->
-              <div class="w-full max-w-xs md:max-w-sm">
-                <q-btn
-                  label="Entrar"
-                  icon="login"
-                  type="submit"
-                  color="black"
+            <div>
+              <!--form de login-->
+              <q-form @submit="handleLogin" class="flex flex-col gap-2 items-center">
+                <q-input
+                  v-model="loginForm.email"
+                  class="w-full max-w-sm"
+                  label="E-mail"
+                  type="email"
+                  outlined
                   rounded
-                  class="full-width font-bold text-white"
-                  :loading="loading"
+                  dense
+                  :rules="[(val) => !!val || $t('login.requiredEmail')]"
                 />
-              </div>
-            </q-form>
+                <!--o val é o conteudo digitado, se for false, vazio, dispara-->
+
+                <q-input
+                  v-model="loginForm.password"
+                  class="w-full max-w-sm"
+                  :label="$t('login.password')"
+                  type="password"
+                  outlined
+                  rounded
+                  dense
+                  :rules="[(val) => !!val || $t('login.requiredPassword')]"
+                />
+
+                <!--botão-->
+                <div class="w-full max-w-xs md:max-w-sm">
+                  <q-btn
+                    label="Entrar"
+                    icon="login"
+                    type="submit"
+                    color="black"
+                    rounded
+                    class="full-width font-bold text-white"
+                    :loading="loading"
+                  />
+                </div>
+              </q-form>
+            </div>
           </div>
         </div>
       </q-page>
@@ -72,6 +72,10 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import catImage from 'assets/login.svg';
 import { useAuthStore } from 'src/stores/auth';
+import { useI18n } from 'vue-i18n';
+import type { LoginCredentials } from 'src/models/Auth';
+
+const { t } = useI18n();
 
 const $q = useQuasar();
 const router = useRouter();
@@ -79,9 +83,9 @@ const loading = ref(false);
 //inicio store
 const authStore = useAuthStore();
 
-const loginForm = ref({
+const loginForm = ref<LoginCredentials>({
   email: '',
-  senha: '',
+  password: '',
 });
 
 const handleLogin = async () => {
@@ -91,22 +95,22 @@ const handleLogin = async () => {
     const success = await authStore.login(loginForm.value);
 
     if (success) {
-      $q.notify({ type: 'positive', message: `Bem-vinda, ${authStore.user.nome}!` });
+      $q.notify({ type: 'positive', message: `${t('login.success')}, ${authStore.user.name}!` });
       const userRole = authStore.user?.role;
 
       if (userRole === 'admin') {
         void router.push('admin/dashboard');
       } else {
-        void router.push('cidadao/dashboard');
+        void router.push('citizen/dashboard');
       }
     } else {
-      $q.notify({ type: 'negative', message: 'E-mail ou senha incorretos.' });
+      $q.notify({ type: 'negative', message: `${t('login.fail')}` });
     }
   } catch (error) {
     console.error('Erro no login:', error);
     $q.notify({
       color: 'negative',
-      message: 'Erro ao conectar com o servidor.',
+      message: `${t('login.error')}`,
       icon: 'error',
     });
   } finally {

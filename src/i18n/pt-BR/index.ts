@@ -15,7 +15,7 @@ export default {
     btnEnter: 'Entrar',
     requiredEmail: 'E-mail é obrigatório',
     requiredPassword: 'Senha é obrigatória',
-    success: 'Bem-vinda, {name}!',
+    success: 'Bem-vinda',
     fail: 'E-mail ou senha incorretos.',
     error: 'Erro ao conectar com o servidor.',
   },
@@ -54,5 +54,22 @@ export default {
     register: 'Cadastrar',
     success: 'Usuário criado com sucesso!',
     error: 'Erro ao criar usuário.',
+    requiredName: 'Nome é obrigatório',
+    requiredEmail: 'E-mail é obrigatório',
+    requiredPassword: 'Senha é obrigatória',
+  },
+
+  report: {
+    title: 'Reportar Problema',
+    choose: 'Escolha a categoria:',
+    help: ' Não sei em qual categoria se encaixa meu problema!',
+    types: {
+      1: 'Vias',
+      2: 'Limpeza',
+      3: 'Luz',
+      4: 'Agua',
+      5: 'Trânsito',
+      general: 'Geral',
+    },
   },
 };

@@ -1,10 +1,6 @@
 import { defineStore } from 'pinia';
-import { api } from 'src/boot/axios';
-
-interface LoginCredentials {
-  email: string;
-  senha: string;
-}
+import type { LoginCredentials } from 'src/models/Auth';
+import { AuthService } from 'src/services/AuthService';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -14,25 +10,19 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async login(credentials: LoginCredentials) {
-      try {
-        const res = await api.get(`/usuarios?email=${credentials.email}`);
-        const user = res.data[0];
+      const user = await AuthService.login(credentials);
 
-        if (user && user.senha === credentials.senha) {
-          const fakeToken = btoa(JSON.stringify({ id: user.id, email: user.email }));
+      if (user) {
+        const fakeToken = btoa(JSON.stringify({ id: user.id, email: user.email }));
 
-          this.token = fakeToken;
-          this.user = user;
+        this.token = fakeToken;
+        this.user = user;
 
-          localStorage.setItem('asten_token', fakeToken);
-          localStorage.setItem('user_data', JSON.stringify(user));
-          return true;
-        }
-        return false;
-      } catch (error) {
-        console.error('Erro no login:', error);
-        return false;
+        localStorage.setItem('asten_token', fakeToken);
+        localStorage.setItem('user_data', JSON.stringify(user));
+        return true;
       }
+      return false;
     },
 
     logout() {

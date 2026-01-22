@@ -14,9 +14,9 @@ const routes: RouteRecordRaw[] = [
 
   //só pra cidadão
   {
-    path: '/cidadao',
+    path: '/citizen',
     component: RouterView,
-    meta: { authRequired: true, role: 'cidadao' },
+    meta: { authRequired: true, role: 'citizen' },
     children: [
       //com layout
       {

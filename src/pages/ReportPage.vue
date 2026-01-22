@@ -1,12 +1,13 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
-      <q-page class="p-6 md:pt-10 max-w-screen-md mx-auto">
+      <q-page class="p-6 md:pt-10 max-w-screen-md mx-auto md:flex-row">
         <!--header da pagina-->
-        <header class="flex items-center justify-between mb-4">
-          <q-btn flat icon="arrow_back" to="/dashboard" color="grey-9" />
-          <span class="text-lg md:text-4xl font-bold"> Reportar Problema </span>
-          <q-btn flat color="grey-9" icon="info" to="/dashboard" size="15px" />
+        <header class="relative flex items-center justify-center mb-4">
+          <div class="absolute left-0">
+            <q-btn flat icon="arrow_back" @click="$router.back()" color="grey-9" />
+          </div>
+          <span class="text-lg md:text-4xl font-bold"> {{ $t('report.title') }} </span>
         </header>
         <!--separador-->
         <q-separator color="black" inset class="full-width q-my-md" />
@@ -22,14 +23,14 @@
 
         <!--titulo-->
         <div class="mt-5">
-          <span class="text-bold text-base">Escolha a categoria:</span>
+          <span class="text-bold text-base">{{ $t('report.choose') }}</span>
         </div>
 
         <!--help-->
         <div @click="lightDialog = true">
-          <q-icon name="help" size="12px" class="text-gray-500" />
+          <q-icon name="las la-question-circle" size="12px" class="text-gray-500" />
           <span class="text-[11px] font-light text-gray-500">
-            Não sei em qual categoria se encaixa meu problema!
+            {{ $t('report.help') }}
           </span>
         </div>
         <help-dialog v-model="lightDialog" />
@@ -70,7 +71,7 @@
 
           <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-1 mt-2">
             <div v-for="(photo, index) in locationStore.photos" :key="index" class="relative">
-              <q-img :src="photo" class="h-25 w-full rounded shadow-md" fit="cover" />
+              <q-img :src="photo" class="h-25 w-full rounded shadow-md" fit="contain" />
               <q-btn
                 round
                 color="negative"
@@ -157,7 +158,9 @@ import { useLocationStore } from 'src/stores/location';
 import HelpDialog from 'src/components/HelpDialog.vue';
 import { api } from 'src/boot/axios';
 import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 const $q = useQuasar();
 const locationStore = useLocationStore();
 const lightDialog = ref(false);
@@ -174,11 +177,35 @@ const reportForm = ref<ReportForm>({
 });
 
 const problemOptions = [
-  { label: 'Vias', value: '1', icon: 'build', color: 'warning', color2: '#a25107' },
-  { label: 'Limpeza', value: '2', icon: 'delete_outline', color: 'positive', color2: '#1E5128' },
-  { label: 'Luz', value: '3', icon: 'flash_on', color: 'accent', color2: '#a29607' },
-  { label: 'Agua', value: '4', icon: 'water_drop', color: 'info', color2: '#1a1a40' },
-  { label: 'Trânsito', value: '5', icon: 'car_crash', color: 'negative', color2: '#750000' },
+  {
+    label: t('report.types.1'),
+    value: '1',
+    icon: 'las la-wrench',
+    color: 'warning',
+    color2: '#a25107',
+  },
+  {
+    label: t('report.types.2'),
+    value: '2',
+    icon: 'delete_outline',
+    color: 'positive',
+    color2: '#1E5128',
+  },
+  {
+    label: t('report.types.3'),
+    value: '3',
+    icon: 'las la-bolt',
+    color: 'accent',
+    color2: '#a29607',
+  },
+  { label: t('report.types.4'), value: '4', icon: 'las la-tint', color: 'info', color2: '#1a1a40' },
+  {
+    label: t('report.types.5'),
+    value: '5',
+    icon: 'car_crash',
+    color: 'negative',
+    color2: '#750000',
+  },
 ];
 
 async function submitReport() {

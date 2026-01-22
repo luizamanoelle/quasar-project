@@ -15,7 +15,7 @@ export default {
     btnEnter: 'Sign In',
     requiredEmail: 'Email is required',
     requiredPassword: 'Password is required',
-    success: 'Welcome, {name}!',
+    success: 'Welcome',
     fail: 'Incorrect email or password.',
     error: 'Error connecting to the server.',
   },
@@ -53,5 +53,22 @@ export default {
     register: 'Register',
     success: 'User created successfully!',
     error: 'Error creating user.',
+    requiredName: 'Name is required',
+    requiredEmail: 'Email is required',
+    requiredPassword: 'Password is required',
+  },
+
+  report: {
+    title: 'Report a Problem',
+    choose: 'Choose a category:',
+    help: 'I’m not sure which category my problem fits into!',
+    types: {
+      1: 'Roads',
+      2: 'Cleaning',
+      3: 'Lighting',
+      4: 'Water',
+      5: 'Traffic',
+      general: 'General',
+    },
   },
 };

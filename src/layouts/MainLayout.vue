@@ -24,7 +24,7 @@
                 color="black"
                 icon="add"
                 size="25px"
-                to="/report"
+                to="/citizen/report"
                 class="min-w-15 px-1"
               />
               <span class="text-bold">{{ $t('layout.report') }}</span>

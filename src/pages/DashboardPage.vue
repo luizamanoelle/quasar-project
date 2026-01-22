@@ -8,7 +8,7 @@
         <div class="m-6 md:pt-10">
           <div class="text-center">
             <span class="text-2xl md:text-4xl"
-              >{{ $t('dashboard.greeting') }}, {{ authStore.user?.nome || 'User' }}</span
+              >{{ $t('dashboard.greeting') }}, {{ authStore.user?.name || 'User' }}</span
             >
             <p class="text-grey-7">{{ $t('dashboard.today') }} {{ day }} {{ month }}</p>
           </div>
@@ -50,7 +50,7 @@
                 <q-card-section class="q-pa-sm">
                   <div class="flex justify-between items-center no-wrap full-width">
                     <div class="text-xs font-bold uppercase text-black truncate">
-                      {{ getTipoNome(item.tipo_id) }}
+                      {{ getName(item.tipo_id) }}
                     </div>
 
                     <div
@@ -86,6 +86,7 @@ import { ref, onMounted } from 'vue';
 import { api } from 'src/boot/axios';
 import { useAuthStore } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
+
 const { t } = useI18n();
 
 interface Ocorrência {
@@ -112,7 +113,7 @@ const loading = ref(true);
 const getStatusColor = (status: number) =>
   ({ 1: 'negative', 2: 'warning', 3: 'positive' })[status] || 'grey';
 
-const getTipoNome = (id: number | string) => {
+const getName = (id: number | string) => {
   const key = `dashboard.types.${id}`;
   // t() retorna a tradução; se não achar a chave do ID, retorna 'General'
   return t(key) !== key ? t(key) : t('dashboard.types.general');

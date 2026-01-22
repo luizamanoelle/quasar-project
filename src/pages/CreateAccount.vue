@@ -8,8 +8,8 @@
             <q-img :src="registerImage" class="md:scale-130" fit="contain" />
           </div>
 
-          <!--titulo-->
           <div class="mx-8 mb-4">
+            <!--titulo-->
             <span class="text-2xl md:text-3xl font-bold">{{ $t('register.create') }}</span>
             <p class="text-grey-7">
               {{ $t('register.already') }}
@@ -17,18 +17,17 @@
                 >{{ $t('register.enter') }}
               </router-link>
             </p>
-          </div>
 
-          <div class="mx-8">
+            <!--form-->
             <q-form @submit="handleRegister" class="flex flex-col gap-2 items-center">
               <q-input
-                v-model="userForm.nome"
+                v-model="userForm.name"
                 class="w-full max-w-sm"
                 :label="$t('register.name')"
                 outlined
                 rounded
                 dense
-                :rules="[(val) => !!val || 'Nome é obrigatório']"
+                :rules="[(val) => !!val || $t('register.requiredName')]"
               />
 
               <q-input
@@ -39,18 +38,18 @@
                 outlined
                 rounded
                 dense
-                :rules="[(val) => !!val || 'E-mail é obrigatório']"
+                :rules="[(val) => !!val || $t('register.requiredEmail')]"
               />
 
               <q-input
-                v-model="userForm.senha"
+                v-model="userForm.password"
                 class="w-full max-w-sm"
                 :label="$t('register.password')"
                 type="password"
                 outlined
                 rounded
                 dense
-                :rules="[(val) => !!val || 'Senha é obrigatória']"
+                :rules="[(val) => !!val || $t('register.requiredPassword')]"
               />
 
               <!--botão-->
@@ -77,26 +76,28 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { api } from 'src/boot/axios';
 import registerImage from 'assets/register.svg';
 import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 
+import { UserService } from 'src/services/UserService';
+import type { UserForm } from 'src/models/User';
+
+const { t } = useI18n();
 const $q = useQuasar();
 const router = useRouter();
 const loading = ref(false);
 
-const userForm = ref({
-  nome: '',
+const userForm = ref<UserForm>({
+  name: '',
   email: '',
-  senha: '',
-  role: 'cidadao',
+  password: '',
+  role: 'citizen',
 });
 
 const handleRegister = async () => {
   loading.value = true;
   try {
-    await api.post('/usuarios', userForm.value);
+    await UserService.register(userForm.value);
 
     $q.notify({
       color: 'positive',
