@@ -1,9 +1,11 @@
 <template>
-  <div class="row flex-center column">
+  <div
+    class="relative w-full aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-800"
+  >
     <!--recebe a camera automaticamente -->
-    <video ref="video" autoplay playsinline muted hidden></video>
+    <video ref="video" autoplay playsinline muted class="hidden"></video>
     <!--desenha o video -->
-    <canvas ref="canvas" class="camera-canvas"></canvas>
+    <canvas ref="canvas" class="w-full h-full object-cover"></canvas>
 
     <div class="q-pt-md">
       <q-btn

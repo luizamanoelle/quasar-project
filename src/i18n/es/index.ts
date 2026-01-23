@@ -71,5 +71,26 @@ export default {
       5: 'Tránsito',
       general: 'General',
     },
+    phototitle: 'Evidencias (Máx. 3)',
+    description: '¿Qué ocurrió?',
+    placeholder: "Ej.: 'El bache está oculto por un charco de agua'",
+    requiredCategory: 'Seleccione una categoría',
+    send: 'Enviar reporte',
+    success: '¡Reporte enviado con éxito!',
+    fail: 'Error al enviar el reporte',
+    titleCancel: 'Confirmar cancelación',
+    message: '¿Realmente deseas cancelar? Todos los datos ingresados y las fotos se perderán.',
+
+    cancel: {
+      label: 'No, continuar',
+    },
+
+    ok: {
+      label: 'Sí, cancelar',
+    },
+
+    notify: {
+      message: 'Reporte cancelado',
+    },
   },
 };

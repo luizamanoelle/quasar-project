@@ -1,20 +1,38 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
-      <q-page class="p-6 md:pt-10 max-w-screen-md mx-auto bg-slate-50">
+      <q-page class="p-6 md:pt-10 max-w-screen-md mx-auto">
         <!--header da pagina-->
-        <header class="relative flex items-center justify-center mb-4">
-          <div class="absolute left-0">
-            <q-btn flat icon="arrow_back" @click="$router.back()" color="grey-9" />
-          </div>
+        <header class="relative flex items-center justify-between mb-4">
+          <q-btn
+            flat
+            icon="arrow_back"
+            @click="$router.push('/citizen/dashboard')"
+            color="grey-9"
+          />
           <span class="text-lg md:text-4xl font-bold"> {{ $t('report.title') }} </span>
+
+          <q-btn flat icon="close" @click="confirmCancel" color="grey-9" />
         </header>
 
         <!--separador-->
         <q-separator color="black" inset class="full-width q-my-md" />
 
         <!--mapa-->
-        <GeoLocation />
+        <section>
+          <GeoLocation />
+          <div class="p-4 flex items-start">
+            <q-icon name="las la-map-marker" size="lg" />
+
+            <p class="text-sm text-slate-700 font-medium">
+              {{ locationStore.address.road }}, {{ locationStore.address.houseNumber }}
+              <br />
+              <span class="text-slate-500 font-normal">{{
+                locationStore.address.neighbourhood
+              }}</span>
+            </p>
+          </div>
+        </section>
 
         <!--endereço-->
         <!--<span class="flex flex-center text-center text-sm md:text-3xl py-4">
@@ -22,57 +40,61 @@
             {{ locationStore.address.neighbourhood }}
           </span>-->
 
-        <!--titulo-->
-        <div class="mt-5">
-          <span class="text-bold text-base">{{ $t('report.choose') }}</span>
-        </div>
+        <section>
+          <!--titulo-->
+          <div>
+            <span class="text-bold text-base">{{ $t('report.choose') }}</span>
+          </div>
 
-        <!--help-->
-        <div @click="lightDialog = true">
-          <q-icon name="las la-question-circle" size="12px" class="text-gray-500" />
-          <span class="text-[11px] font-light text-gray-500">
-            {{ $t('report.help') }}
-          </span>
-        </div>
-        <help-dialog v-model="lightDialog" />
+          <!--help-->
+          <div @click="lightDialog = true">
+            <q-icon name="las la-question-circle" size="12px" class="text-gray-500" />
+            <span class="text-[11px] font-light text-gray-500">
+              {{ $t('report.help') }}
+            </span>
+          </div>
+          <help-dialog v-model="lightDialog" />
 
-        <!--row de botões pra selecionar a categorias do report-->
-        <div class="row q-col-gutter-md flex-center">
-          <div v-for="opt in problemOptions" :key="opt.value" class="col">
-            <!--botao-->
-            <q-btn
-              bordered
-              style="border-radius: 25px"
-              :color="opt.color"
-              class="full-width transition-opacity duration-300"
-              :class="{
-                'opacity-30': reportForm.type !== null && reportForm.type !== opt.value,
-              }"
-              @click="reportForm.type = opt.value"
-            >
-              <!--icon sepaeado-->
-              <div class="column items-center my-3">
-                <q-icon :name="opt.icon" size="25px" :style="{ color: opt.iconColor }" />
+          <!--row de botões pra selecionar a categorias do report-->
+          <div class="grid grid-cols-5 sm:grid-cols-5 gap-3">
+            <div v-for="opt in problemOptions" :key="opt.value">
+              <!--botao-->
+              <q-btn
+                style="border-radius: 25px"
+                :color="opt.color"
+                class="full-width transition-opacity duration-300"
+                :class="{
+                  'opacity-30': reportStore.type !== null && reportStore.type !== opt.value,
+                }"
+                @click="reportStore.type = opt.value"
+              >
+                <!--icon sepaeado-->
+                <div class="my-3">
+                  <q-icon :name="opt.icon" :style="{ color: opt.iconColor }" />
+                </div>
+              </q-btn>
+
+              <!--texto-->
+              <div
+                class="text-center"
+                :class="{
+                  'opacity-30': reportStore.type !== null && reportStore.type !== opt.value,
+                }"
+              >
+                <label>{{ opt.label }}</label>
               </div>
-            </q-btn>
-
-            <!--texto-->
-            <div
-              class="text-center text-[11.4px] transition-opacity duration-300"
-              :class="{ 'opacity-30': reportForm.type !== null && reportForm.type !== opt.value }"
-            >
-              {{ opt.label }}
             </div>
           </div>
-        </div>
+        </section>
 
         <!--botao da foto-->
-        <div class="mt-4">
-          <span class="text-base font-bold text-gray-800"> Tire sua Foto: </span>
-
-          <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-1 mt-2">
-            <div v-for="(photo, index) in locationStore.photos" :key="index" class="relative">
-              <q-img :src="photo" class="h-25 w-full rounded shadow-md" fit="contain" />
+        <section class="mt-2">
+          <label class="text-bold text-base">Evidências (Máx 3)</label>
+          <div class="grid grid-cols-3 gap-3 mt-2">
+            <div v-for="(photo, index) in locationStore.photos" :key="index" class="relative group">
+              <!--imagem-->
+              <q-img :src="photo" class="h-25 w-full" fit="contain" />
+              <!--botao de excluir-->
               <q-btn
                 round
                 color="negative"
@@ -83,67 +105,53 @@
               />
             </div>
 
-            <div v-if="locationStore.photos.length < 3">
-              <q-btn
-                color="grey-8"
-                style="height: 100px; border: 2px dashed #ccc"
-                flat
-                to="/citizen/cam"
-                class="!rounded-xl border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100 transition-all flex flex-col"
-              >
-                <div class="flex flex-col items-center justify-center">
-                  <q-icon name="add_a_photo" size="32px" />
-                  <span class="text-xs mt-2 font-medium">
-                    {{ locationStore.photos.length }}/3
-                  </span>
-                </div>
-              </q-btn>
-            </div>
+            <!--botao de tirar foto-->
+            <button
+              v-if="locationStore.photos.length < 3"
+              @click="$router.push('/citizen/cam')"
+              class="h-24 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center text-slate-400"
+            >
+              <q-icon name="add_a_photo" size="lg" />
+              <span class="text-[13px] font-bold mt-1">{{ locationStore.photos.length }}/3</span>
+            </button>
           </div>
-        </div>
+        </section>
 
         <!--descrição-->
-        <div class="mt-4">
-          <!--titulo-->
-          <span class="text-bold text-base">Descreva o problema:</span>
+        <section>
+          <div class="mt-2">
+            <!--titulo-->
+            <span class="text-bold text-base">{{ $t('report.description') }}</span>
 
-          <!--input-->
-          <q-input
-            outlined
-            v-model="text"
-            type="textarea"
-            rows="3"
-            placeholder="Ex: 'O buraco está escondido por uma poça dágua'"
-          >
-            <template v-slot:append>
-              <q-icon name="close" @click="text = ''" class="cursor-pointer" />
-            </template>
-          </q-input>
-        </div>
-
-        <!--localização-->
-        <div class="mt-2">
-          <!--titulo-->
-          <span class="text-bold text-base">Localização:</span>
-          <q-item>
-            <q-item-label caption
-              >{{ locationStore.address.road }}, {{ locationStore.address.houseNumber }} -
-              {{ locationStore.address.neighbourhood }}</q-item-label
+            <!--input-->
+            <q-input
+              outlined
+              v-model="reportStore.description"
+              type="textarea"
+              rows="3"
+              class="w-full rounded-2xl bg-white"
+              :placeholder="$t('report.placeholder')"
             >
-          </q-item>
-        </div>
+              <template v-slot:append>
+                <q-icon name="close" @click="reportStore.description = ''" class="cursor-pointer" />
+              </template>
+            </q-input>
+          </div>
+        </section>
 
         <!--enviar-->
-        <q-btn
-          @click="submitReport"
-          no-caps
-          color="black"
-          class="full-width q-mt-md py-md"
-          rounded
-          to="/dashboard"
-        >
-          <span class="q-ml-md text-h6 text-weight-bold">Enviar Ocorrência</span></q-btn
-        >
+        <div class="m-4">
+          <q-btn
+            @click="submitReport"
+            :loading="loading"
+            no-caps
+            color="black"
+            class="full-width"
+            rounded
+          >
+            <span class="text-bold text-xl">{{ $t('report.send') }}</span></q-btn
+          >
+        </div>
 
         <!--ordem de hierarquia das page-->
       </q-page>
@@ -153,25 +161,26 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useLocationStore } from 'src/stores/location';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { useLocationStore } from 'src/stores/location';
 import { ReportService } from 'src/services/ReportService';
+import { useAuthStore } from 'src/stores/auth';
+import { useReportStore } from 'src/stores/report';
 
-import HelpDialog from 'src/components/HelpDialog.vue';
 import GeoLocation from 'src/components/GeoLocation.vue';
+import HelpDialog from 'src/components/HelpDialog.vue';
 
 const { t } = useI18n();
 const $q = useQuasar();
+const router = useRouter();
 const locationStore = useLocationStore();
+const authStore = useAuthStore();
+const reportStore = useReportStore();
 
 const lightDialog = ref(false);
-const text = ref('');
 const loading = ref(false);
-
-const reportForm = ref({
-  type: null as string | null,
-});
 
 const problemOptions = [
   {
@@ -211,18 +220,49 @@ const problemOptions = [
   },
 ];
 
-async function submitReport() {
-  if (!reportForm.value.type) {
-    $q.notify({ type: 'warning', message: 'Selecione uma categoria' });
+const confirmCancel = () => {
+  $q.dialog({
+    title: t('report.titleCancel'),
+    message: t('report.message'),
+    cancel: {
+      label: t('report.cancel.label'),
+      flat: true,
+      color: 'grey-9',
+    },
+    ok: {
+      label: t('report.ok.label'),
+      color: 'negative',
+      unelevated: true,
+    },
+    persistent: true,
+  }).onOk(() => {
+    locationStore.clearPhotos();
+
+    if (reportStore.clearReport) reportStore.clearReport();
+
+    void router.push('/citizen/dashboard');
+
+    $q.notify({
+      message: t('report.notify.messa'),
+      color: 'grey-8',
+      icon: 'close',
+    });
+  });
+};
+
+const submitReport = async () => {
+  if (!reportStore.type) {
+    $q.notify({ color: 'warning', message: t('report.requiredCategory') });
     return;
   }
 
   loading.value = true;
+
   try {
     const payload = {
-      user_id: 1,
-      type_id: reportForm.value.type,
-      description: text.value,
+      user_id: authStore.user?.id || 0,
+      type_id: reportStore.type,
+      description: reportStore.description,
       location: {
         address: `${locationStore.address.road}, ${locationStore.address.houseNumber}`,
         neighborhood: locationStore.address.neighbourhood,
@@ -233,21 +273,23 @@ async function submitReport() {
       date: new Date().toLocaleDateString('pt-BR'),
       status: 1,
     };
+
     //post
     await ReportService.create(payload);
 
+    reportStore.clearReport();
     locationStore.clearPhotos();
+
     $q.notify({
       color: 'positive',
-      message: 'Ocorrência enviada com sucesso!',
+      message: t('report.success'),
       icon: 'check',
     });
+    void router.push('/citizen/dashboard');
   } catch {
-    $q.notify({
-      color: 'negative',
-      message: 'Erro ao registrar!',
-      icon: 'error',
-    });
+    $q.notify({ type: 'negative', message: t('report.fail') });
+  } finally {
+    loading.value = false;
   }
-}
+};
 </script>

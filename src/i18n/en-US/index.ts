@@ -70,5 +70,26 @@ export default {
       5: 'Traffic',
       general: 'General',
     },
+    phototitle: 'Evidence (Max 3)',
+    description: 'What happened?',
+    placeholder: "e.g.: 'The pothole is hidden by a puddle of water'",
+    requiredCategory: 'Select a category',
+    send: 'Submit Report',
+    success: 'Report submitted successfully!',
+    fail: 'Error sending report',
+    titleCancel: 'Confirm cancellation',
+    message: 'Do you really want to cancel? All entered data and photos will be lost.',
+
+    cancel: {
+      label: 'No, continue',
+    },
+
+    ok: {
+      label: 'Yes, cancel',
+    },
+
+    notify: {
+      message: 'Report canceled',
+    },
   },
 };

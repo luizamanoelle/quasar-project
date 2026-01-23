@@ -71,5 +71,26 @@ export default {
       5: 'Trânsito',
       general: 'Geral',
     },
+    phototitle: 'Evidências (Máx 3)',
+    description: 'O que aconteceu?',
+    placeholder: "Ex: 'O buraco está escondido por uma poça dágua'",
+    requiredCategory: 'Selecione uma categoria',
+    send: 'Enviar Relato',
+    success: 'Relato enviado com sucesso!',
+    fail: 'Erro ao enviar',
+    titleCancel: 'Confirmar cancelamento',
+    message: 'Deseja realmente cancelar? Todos os dados preenchidos e fotos serão perdidos.',
+
+    cancel: {
+      label: 'Não, continuar',
+    },
+
+    ok: {
+      label: 'Sim, cancelar',
+    },
+
+    notify: {
+      message: 'Ocorrência cancelada',
+    },
   },
 };
