@@ -16,13 +16,13 @@
 
         <div class="flex flex-wrap gap-4 p-4">
           <div
-            v-for="(img, index) in report.imagens"
+            v-for="(img, index) in report.photos"
             :key="index"
             class="w-full md:w-64 h-48 rounded-lg overflow-hidden border border-slate-200"
           >
             <q-img :src="img" class="w-full h-full object-cover" />
           </div>
-          <div v-if="!report.imagens?.length" class="text-slate-400 italic">
+          <div v-if="!report.photos?.length" class="text-slate-400 italic">
             Nenhuma imagem disponível.
           </div>
         </div>
@@ -31,7 +31,7 @@
       <q-card flat class="rounded-2xl border border-slate-200 p-6">
         <div class="flex justify-between items-start">
           <div class="space-y-1">
-            <h1 class="text-2xl font-black text-slate-900">{{ report.tipo }}</h1>
+            <h1 class="text-2xl font-black text-slate-900">{{ report.type }}</h1>
             <p class="text-slate-500 text-sm">Protocolo: #{{ report.id }}</p>
           </div>
           <q-badge :color="getStatusColor(report.status)" class="px-3 py-1 font-bold">
@@ -46,7 +46,7 @@
               <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">
                 Data de Registro
               </p>
-              <p class="text-slate-700 font-medium">{{ report.data_criacao }}</p>
+              <p class="text-slate-700 font-medium">{{ report.date }}</p>
             </div>
           </div>
           <div class="flex items-center gap-3">
@@ -54,7 +54,7 @@
             <div>
               <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Endereço</p>
               <p class="text-slate-700 font-medium">
-                {{ report.localizacao?.endereco || 'Não informado' }}
+                {{ report.location?.address || 'Não informado' }}
               </p>
             </div>
           </div>
@@ -108,11 +108,11 @@ import { useQuasar } from 'quasar';
 
 interface Ocorrencia {
   id: number;
-  tipo: string;
+  type: string;
   status: number;
-  imagens?: string[];
-  data_criacao: string;
-  localizacao?: { endereco: string };
+  photos?: string[];
+  date: string;
+  location?: { address: string };
 }
 
 const route = useRoute();
@@ -133,7 +133,7 @@ const statusOptions = [
 
 const fetchDetails = async () => {
   try {
-    const res = await api.get(`/ocorrencias/${route.params.id}`);
+    const res = await api.get(`/reports/${String(route.params.id)}`);
     report.value = res.data;
     tempStatus.value = res.data.status;
   } catch (e) {
@@ -148,7 +148,7 @@ const confirmStatusChange = async () => {
 
   updating.value = true;
   try {
-    await api.patch(`/ocorrencias/${report.value.id}`, {
+    await api.patch(`/reports/${report.value.id}`, {
       status: tempStatus.value,
     });
 

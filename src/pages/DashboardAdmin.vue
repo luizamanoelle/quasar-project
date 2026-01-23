@@ -67,11 +67,11 @@ interface Coluna {
 interface Ocorrência {
   id: number;
   tipo_id: number;
-  localizacao?: {
-    endereco: string;
+  location?: {
+    address: string;
   };
-  imagens?: string[];
-  data_criacao: string;
+  photos?: string[];
+  date: string;
   status: number;
 }
 
@@ -93,14 +93,14 @@ const columns: Coluna[] = [
   { name: 'id', align: 'left', label: 'id', field: 'id' },
   { name: 'type', label: 'Categoria', field: 'tipo_id', align: 'left' },
   { name: 'status', label: 'Status', field: 'status', align: 'center' },
-  { name: 'data', label: 'Data', field: 'data_criacao', align: 'center' },
+  { name: 'data', label: 'Data', field: 'date', align: 'center' },
   { name: 'action', label: 'Ações', field: 'id', align: 'right' },
 ];
 
 const fetchReport = async () => {
   loading.value = true;
   try {
-    const res = await api.get('/ocorrencias');
+    const res = await api.get('/reports');
     occurrence.value = res.data;
   } catch (e) {
     console.error('Erro ao buscar ocorrências', e);

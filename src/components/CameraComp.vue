@@ -123,6 +123,6 @@ function TakePicture() {
     timeout: 500,
   });
 
-  void router.push('/report');
+  void router.push('/citizen/report');
 }
 </script>

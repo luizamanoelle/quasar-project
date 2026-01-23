@@ -33,7 +33,7 @@
             <q-spinner-dots color="primary" size="40px" />
           </div>
 
-          <!-- se o loading terminar e as ocorrencias nao estiverem vazias mostra-->
+          <!-- se o loading terminar e as reports nao estiverem vazias mostra-->
           <template v-else-if="occurrence.length > 0">
             <div v-for="item in occurrence" :key="item.id">
               <q-card
@@ -41,8 +41,8 @@
                 class="bg-white h-full flex flex-col overflow-hidden border-gray-100 p-2"
               >
                 <q-img
-                  v-if="item.imagens && item.imagens.length > 0"
-                  :src="item.imagens[0]"
+                  v-if="item.photos && item.photos.length > 0"
+                  :src="item.photos[0]"
                   class="h-35"
                   fit="cover"
                 />
@@ -50,7 +50,7 @@
                 <q-card-section class="q-pa-sm">
                   <div class="flex justify-between items-center no-wrap full-width">
                     <div class="text-xs font-bold uppercase text-black truncate">
-                      {{ getName(item.tipo_id) }}
+                      {{ getName(item.type_id) }}
                     </div>
 
                     <div
@@ -60,13 +60,13 @@
                   </div>
 
                   <div class="text-xs py-1 text-gray-600 full-width">
-                    {{ item.localizacao?.endereco || 'Endereço não disponível' }}
+                    {{ item.location?.address || 'Endereço não disponível' }}
                   </div>
                 </q-card-section>
 
                 <q-card-actions class="flex justify-between items-center mt-auto q-px-sm q-pb-sm">
                   <span class="text-xs text-gray-500">
-                    {{ item.data_criacao }}
+                    {{ item.date }}
                   </span>
                 </q-card-actions>
               </q-card>
@@ -91,12 +91,12 @@ const { t } = useI18n();
 
 interface Ocorrência {
   id: number;
-  tipo_id: number;
-  localizacao?: {
-    endereco: string;
+  type_id: number;
+  location?: {
+    address: string;
   };
-  imagens?: string[];
-  data_criacao: string;
+  photos?: string[];
+  date: string;
   status: number;
 }
 
@@ -119,10 +119,10 @@ const getName = (id: number | string) => {
   return t(key) !== key ? t(key) : t('dashboard.types.general');
 };
 
-const fetchOcorrencias = async () => {
+const fetchreports = async () => {
   loading.value = true;
   try {
-    const res = await api.get('/ocorrencias');
+    const res = await api.get('/reports');
     occurrence.value = res.data;
   } catch (e) {
     console.error('Erro ao buscar ocorrências', e);
@@ -132,6 +132,6 @@ const fetchOcorrencias = async () => {
 };
 
 onMounted(() => {
-  void fetchOcorrencias();
+  void fetchreports();
 });
 </script>

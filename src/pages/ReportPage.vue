@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
-      <q-page class="p-6 md:pt-10 max-w-screen-md mx-auto md:flex-row">
+      <q-page class="p-6 md:pt-10 max-w-screen-md mx-auto bg-slate-50">
         <!--header da pagina-->
         <header class="relative flex items-center justify-center mb-4">
           <div class="absolute left-0">
@@ -9,6 +9,7 @@
           </div>
           <span class="text-lg md:text-4xl font-bold"> {{ $t('report.title') }} </span>
         </header>
+
         <!--separador-->
         <q-separator color="black" inset class="full-width q-my-md" />
 
@@ -51,7 +52,7 @@
             >
               <!--icon sepaeado-->
               <div class="column items-center my-3">
-                <q-icon :name="opt.icon" size="25px" :style="{ color: opt.color2 }" />
+                <q-icon :name="opt.icon" size="25px" :style="{ color: opt.iconColor }" />
               </div>
             </q-btn>
 
@@ -87,7 +88,7 @@
                 color="grey-8"
                 style="height: 100px; border: 2px dashed #ccc"
                 flat
-                to="/cam"
+                to="/citizen/cam"
                 class="!rounded-xl border-gray-300 bg-gray-50 text-gray-500 hover:bg-gray-100 transition-all flex flex-col"
               >
                 <div class="flex flex-col items-center justify-center">
@@ -113,7 +114,6 @@
             type="textarea"
             rows="3"
             placeholder="Ex: 'O buraco está escondido por uma poça dágua'"
-            :dense="dense"
           >
             <template v-slot:append>
               <q-icon name="close" @click="text = ''" class="cursor-pointer" />
@@ -153,27 +153,24 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import GeoLocation from 'src/components/GeoLocation.vue';
-import { useLocationStore } from 'src/stores/location';
-import HelpDialog from 'src/components/HelpDialog.vue';
-import { api } from 'src/boot/axios';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import { useLocationStore } from 'src/stores/location';
+import { ReportService } from 'src/services/ReportService';
+
+import HelpDialog from 'src/components/HelpDialog.vue';
+import GeoLocation from 'src/components/GeoLocation.vue';
 
 const { t } = useI18n();
 const $q = useQuasar();
 const locationStore = useLocationStore();
+
 const lightDialog = ref(false);
-const dense = ref(false);
 const text = ref('');
+const loading = ref(false);
 
-interface ReportForm {
-  type: string | null;
-  description?: string;
-}
-
-const reportForm = ref<ReportForm>({
-  type: null, //tipo de ocorrencia
+const reportForm = ref({
+  type: null as string | null,
 });
 
 const problemOptions = [
@@ -182,53 +179,64 @@ const problemOptions = [
     value: '1',
     icon: 'las la-wrench',
     color: 'warning',
-    color2: '#a25107',
+    iconColor: '#a25107',
   },
   {
     label: t('report.types.2'),
     value: '2',
     icon: 'delete_outline',
     color: 'positive',
-    color2: '#1E5128',
+    iconColor: '#1E5128',
   },
   {
     label: t('report.types.3'),
     value: '3',
     icon: 'las la-bolt',
     color: 'accent',
-    color2: '#a29607',
+    iconColor: '#a29607',
   },
-  { label: t('report.types.4'), value: '4', icon: 'las la-tint', color: 'info', color2: '#1a1a40' },
+  {
+    label: t('report.types.4'),
+    value: '4',
+    icon: 'las la-tint',
+    color: 'info',
+    iconColor: '#1a1a40',
+  },
   {
     label: t('report.types.5'),
     value: '5',
     icon: 'car_crash',
     color: 'negative',
-    color2: '#750000',
+    iconColor: '#750000',
   },
 ];
 
 async function submitReport() {
+  if (!reportForm.value.type) {
+    $q.notify({ type: 'warning', message: 'Selecione uma categoria' });
+    return;
+  }
+
+  loading.value = true;
   try {
     const payload = {
-      usuario_id: 1,
-      tipo_id: reportForm.value.type,
-      descricao: text.value,
-      localizacao: {
-        endereco: `${locationStore.address.road}, ${locationStore.address.houseNumber}`,
-        bairro: locationStore.address.neighbourhood,
+      user_id: 1,
+      type_id: reportForm.value.type,
+      description: text.value,
+      location: {
+        address: `${locationStore.address.road}, ${locationStore.address.houseNumber}`,
+        neighborhood: locationStore.address.neighbourhood,
         lat: locationStore.address.lat,
         lng: locationStore.address.lng,
       },
-      imagens: locationStore.photos,
-      data_criacao: new Date().toLocaleDateString('pt-BR'),
+      photos: locationStore.photos,
+      date: new Date().toLocaleDateString('pt-BR'),
       status: 1,
     };
     //post
-    await api.post('/ocorrencias', payload);
+    await ReportService.create(payload);
 
     locationStore.clearPhotos();
-
     $q.notify({
       color: 'positive',
       message: 'Ocorrência enviada com sucesso!',
