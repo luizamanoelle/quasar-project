@@ -1,32 +1,30 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
-      <q-page>
-        <div
-          class="flex flex-center flex-col full-width min-h-screen md:flex-row p-6 md:p-12 gap-2 background-photo"
-        >
-          <div class="grid grid-cols-3 items-center text-white">
-            <!-- esquerda (vazio) -->
-            <div></div>
+      <q-page class="flex flex-col p-6 md:p-12 background-photo">
+        <div class="grid grid-cols-3 items-center text-white">
+          <!-- esquerda (vazio) -->
+          <div></div>
 
-            <!-- centro -->
-            <div class="text-center">
-              <span class="text-h5 text-weight-light">Tirar Foto</span>
-            </div>
-
-            <!-- direita -->
-            <div class="flex justify-end">
-              <q-btn flat icon="close" to="/report" />
-            </div>
+          <!-- centro -->
+          <div class="text-center">
+            <span class="text-h5 text-weight-light">Tirar Foto</span>
           </div>
 
-          <q-separator color="white" inset class="full-width q-my-md" />
-
-          <CameraComp />
-          <div class="text-center q-pa-xs">
-            <span class="text-h7 text-weight-light text-white">clique para tirar sua foto</span>
+          <!-- direita -->
+          <div class="flex justify-end">
+            <q-btn flat icon="close" to="/report" />
           </div>
         </div>
+
+        <q-separator color="white" inset class="full-width q-my-md" />
+
+        <CameraComp />
+        <footer class="mt-auto pt-6 text-center">
+          <p class="text-slate-400 text-xs italic">
+            A imagem será salva automaticamente no seu relato.
+          </p>
+        </footer>
       </q-page>
     </q-page-container>
   </q-layout>

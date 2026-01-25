@@ -140,7 +140,7 @@
         </section>
 
         <!--enviar-->
-        <div class="m-4">
+        <div class="mt-9">
           <q-btn
             @click="submitReport"
             :loading="loading"

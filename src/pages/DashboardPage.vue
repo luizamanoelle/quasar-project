@@ -80,12 +80,12 @@
 </template>
 
 <script setup lang="ts">
-import GeoLocation from 'src/components/GeoLocation.vue';
 import { useLocationStore } from 'src/stores/location';
 import { ref, onMounted } from 'vue';
 import { api } from 'src/boot/axios';
 import { useAuthStore } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
+import GeoLocation from 'src/components/GeoLocation.vue';
 
 const { t } = useI18n();
 
