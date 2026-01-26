@@ -9,10 +9,17 @@
             icon="arrow_back"
             @click="$router.push('/citizen/dashboard')"
             color="grey-9"
+            aria-label="Voltar para o dashboard"
           />
           <span class="text-lg md:text-4xl font-bold"> {{ $t('report.title') }} </span>
 
-          <q-btn flat icon="close" @click="confirmCancel" color="grey-9" />
+          <q-btn
+            flat
+            aria-label="Fechar Relato"
+            icon="close"
+            @click="confirmCancel"
+            color="grey-9"
+          />
         </header>
 
         <!--separador-->
@@ -96,6 +103,7 @@
               <q-img :src="photo" class="h-25 w-full" fit="contain" />
               <!--botao de excluir-->
               <q-btn
+                aria-label="Excluir foto tirada"
                 round
                 color="negative"
                 icon="close"
@@ -110,6 +118,7 @@
               v-if="locationStore.photos.length < 3"
               @click="$router.push('/citizen/cam')"
               class="h-24 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center text-slate-400"
+              aria-label="Tirar foto da evidência"
             >
               <q-icon name="add_a_photo" size="lg" />
               <span class="text-[13px] font-bold mt-1">{{ locationStore.photos.length }}/3</span>
@@ -133,7 +142,12 @@
               :placeholder="$t('report.placeholder')"
             >
               <template v-slot:append>
-                <q-icon name="close" @click="reportStore.description = ''" class="cursor-pointer" />
+                <q-icon
+                  name="close"
+                  aria-label="Apagar descrição"
+                  @click="reportStore.description = ''"
+                  class="cursor-pointer"
+                />
               </template>
             </q-input>
           </div>
@@ -149,8 +163,9 @@
             class="full-width"
             rounded
           >
-            <span class="text-bold text-xl">{{ $t('report.send') }}</span></q-btn
-          >
+            <span class="text-bold text-xl px-4">{{ $t('report.send') }}</span>
+            <q-icon name="las la-paper-plane" />
+          </q-btn>
         </div>
 
         <!--ordem de hierarquia das page-->

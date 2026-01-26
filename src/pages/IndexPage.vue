@@ -31,6 +31,7 @@
               rounded
               unelevated
               padding="16px"
+              icon="las la-play"
               class="full-width font-bold text-white shadow-2"
               to="/login"
             />

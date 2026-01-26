@@ -5,7 +5,7 @@
         <div class="flex items-center justify-between w-full">
           <!--usuario-->
           <div class="flex items-center">
-            <q-btn-dropdown flat no-caps>
+            <q-btn-dropdown flat no-caps aria-label="Abrir opção de sair">
               <template v-slot:label>
                 <div class="flex items-center">
                   <q-avatar size="34px" class="bg-purple-100 text-primary font-bold">
@@ -29,12 +29,19 @@
           </div>
 
           <!--data-->
-          <div class="text-gray-500 text-sm font-medium">
+          <div class="text-gray-700 text-sm font-medium">
             <span class="capitalize">{{ currentDate }}</span>
           </div>
 
           <!--refresh-->
-          <q-btn flat round color="grey-7" icon="refresh" @click="handleRefresh" />
+          <q-btn
+            flat
+            aria-label="Atualizar a página"
+            round
+            color="grey-7"
+            icon="refresh"
+            @click="handleRefresh"
+          />
         </div>
       </q-toolbar>
     </q-header>

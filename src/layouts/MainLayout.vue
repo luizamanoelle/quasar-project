@@ -12,7 +12,7 @@
             no-caps
             active-color="primary"
             indicator-color="transparent"
-            class="text-gray-600"
+            class="text-gray-700"
             align="justify"
             dense
           >

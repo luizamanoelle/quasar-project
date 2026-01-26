@@ -9,7 +9,7 @@
       <canvas ref="canvas" class="w-full h-full object-cover"></canvas>
 
       <!--quadradinhos-->
-      <div class="absolute inset-0 grid grid-cols-3 grid-rows-3">
+      <div class="camera-grid">
         <div v-for="i in 9" :key="i" class="border border-white/5"></div>
       </div>
     </div>
@@ -34,6 +34,7 @@
       </div>
 
       <button
+        aria-label="Tirar foto"
         @click="TakePicture"
         class="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center p-1"
       >
@@ -45,22 +46,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { useLocationStore } from 'src/stores/location';
-import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 
-const locationStore = useLocationStore();
-const router = useRouter();
+//avisar o pai q tirou a foto
+const emit = defineEmits(['captured']);
 const $q = useQuasar();
 
 defineOptions({ name: 'CameraComp' });
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const video = ref<HTMLVideoElement | null>(null);
+const fileInput = ref<HTMLInputElement | null>(null);
+
 //desenhar dentro do canvas a imagem
 const ctx = ref<CanvasRenderingContext2D | null>(null);
-const fileInput = ref<HTMLInputElement | null>(null);
-const triggerFilePicker = () => fileInput.value?.click();
 const activeStream = ref<MediaStream | null>(null);
 
 const constraints = ref({
@@ -71,17 +70,35 @@ const constraints = ref({
   audio: false,
 });
 
+const triggerFilePicker = () => fileInput.value?.click();
+
 //pegar imagem da galeria
 const onFilePicked = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      locationStore.addPhoto(e.target?.result as string);
-      void router.push('/citizen/report');
+      const photoBase64 = e.target?.result as string;
+      emit('captured', photoBase64); //emite pro pai escolher oq fazer
     };
     reader.readAsDataURL(file);
   }
+};
+
+const TakePicture = () => {
+  if (!canvas.value) return;
+
+  //converte a imagem com o toData
+  const photoBase64 = canvas.value.toDataURL('image/jpeg', 0.8);
+
+  $q.notify({
+    message: 'Foto adicionada!',
+    color: 'positive',
+    icon: 'photo_camera',
+    timeout: 500,
+  });
+
+  emit('captured', photoBase64);
 };
 
 function setStream(stream: MediaStream) {
@@ -123,25 +140,6 @@ function resizeCanvas() {
   canvas.value.height = video.value.videoHeight || height;
 }
 
-function TakePicture() {
-  const ex = canvas.value;
-  if (!ex) return;
-
-  //converte a imagem com o toData
-  const photoBase64 = ex.toDataURL('image/png');
-
-  locationStore.addPhoto(photoBase64);
-
-  $q.notify({
-    message: 'Foto adicionada!',
-    color: 'positive',
-    icon: 'photo_camera',
-    timeout: 500,
-  });
-
-  void router.push('/citizen/report');
-}
-
 onMounted(async () => {
   if (video.value && canvas.value) {
     ctx.value = canvas.value.getContext('2d');
@@ -167,10 +165,28 @@ onUnmounted(() => {
 
   // Desliga cada trilha da câmera (vídeo)
   if (activeStream.value) {
-    activeStream.value.getTracks().forEach((track) => {
-      track.stop();
-      console.log('Câmera desligada:', track.label);
-    });
+    activeStream.value.getTracks().forEach((track) => track.stop());
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.camera-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  pointer-events: none;
+
+  & > div {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: border-color 0.3s ease;
+
+    &:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+</style>

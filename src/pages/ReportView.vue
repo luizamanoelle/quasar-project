@@ -10,11 +10,17 @@
         <!--titulo da ocorrencia e data-->
 
         <div class="md:pt-10 flex justify-between">
-          <q-btn flat icon="arrow_back" @click="$router.push('/admin/dashboard')" color="grey-9" />
+          <q-btn
+            flat
+            aria-label="Voltar"
+            icon="arrow_back"
+            @click="$router.push('/admin/dashboard')"
+            color="grey-9"
+          />
           <span class="text-2xl md:text-4xl">
             {{ getReportTypeName(report.type_id) }}
           </span>
-          <q-btn flat icon="close" @click="confirmCancel" color="grey-9" />
+          <q-btn flat aria-label="Fechar" icon="close" @click="confirmCancel" color="grey-9" />
           <div class="flex items-center">
             <p class="text-gray-500 text-sm">Registrado em {{ report.date }}</p>
           </div>
@@ -117,6 +123,7 @@
           <!--confirmar troca de status-->
           <div class="my-8 justify-items-end">
             <q-btn
+              icon="las la-check"
               v-if="hasChanges"
               label="Confirmar"
               color="positive"
