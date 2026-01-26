@@ -33,7 +33,7 @@ const routes: RouteRecordRaw[] = [
   //só pra admin c/ layout proprio
   {
     path: '/admin',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/AdminLayout.vue'),
     meta: { authRequired: true, role: 'admin' },
     children: [
       { path: 'dashboard', component: () => import('pages/DashboardAdmin.vue') },

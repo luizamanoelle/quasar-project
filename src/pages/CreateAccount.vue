@@ -105,7 +105,7 @@ const handleRegister = async () => {
       icon: 'check',
     });
 
-    void router.push('/dashboard');
+    void router.push('/login');
   } catch (e) {
     console.error('Erro ao cadastrar:', e);
     $q.notify({

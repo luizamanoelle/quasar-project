@@ -1,107 +1,179 @@
 <template>
-  <q-layout>
-    <q-page-container>
-      <q-page>
-        <div class="m-6 md:pt-10">
-          <div class="text-center">
-            <span class="text-2xl md:text-4xl"
-              >{{ $t('dashboard.greeting') }}, {{ authStore.user?.name || 'User' }}</span
-            >
-            <p class="text-grey-7">{{ $t('dashboard.today') }} {{ day }} {{ month }}</p>
-          </div>
+  <q-page class="bg-gray-50 p-4 md:p-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div class="bg-blue-500 p-3 rounded-lg border border-gray-200 shadow-sm">
+        <div class="text-[10px] uppercase font-bold mb-1">Novos Hoje</div>
+        <div class="flex items-end justify-between">
+          <span class="text-2xl font-bold">{{ stats.todayCount }}</span>
+          <q-icon name="today" size="xs" color="blue-3" />
+        </div>
+      </div>
 
-          <q-separator color="black" inset class="full-width q-my-md" />
+      <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+        <div class="text-[10px] uppercase font-bold text-red-500 mb-1">Críticos (+3 dias)</div>
+        <div class="flex items-end justify-between">
+          <span class="text-2xl font-bold">{{ stats.overdueCount }}</span>
+          <q-icon name="priority_high" size="xs" color="red-3" />
+        </div>
+      </div>
 
-          <div>
-            <q-table
-              flat
-              bordered
-              title="Ocorrências"
-              dense
-              :rows="occurrence"
-              :columns="columns"
-              row-key="id"
-              :loading="loading"
-            >
-              <template v-slot:body-cell-status="props">
-                <q-td :props="props">
-                  <q-badge :color="getStatusColor(props.value)">
-                    {{ getStatusLabel(props.value) }}
-                  </q-badge>
-                </q-td>
-              </template>
+      <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+        <div class="text-[10px] uppercase font-bold text-orange-500 mb-1">Em Análise</div>
+        <div class="flex items-end justify-between">
+          <span class="text-2xl font-bold">{{ stats.inProgressCount }}</span>
+          <q-icon name="hourglass_empty" size="xs" color="orange-3" />
+        </div>
+      </div>
 
-              <template v-slot:body-cell-action="props">
-                <q-td :props="props">
-                  <q-btn
-                    flat
-                    round
-                    color="primary"
-                    icon="visibility"
-                    @click="goToDetails(props.row.id)"
-                  />
-                </q-td>
-              </template>
-            </q-table>
+      <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+        <div class="text-[10px] uppercase font-bold text-gray-500 mb-1">Total Geral</div>
+        <div class="flex items-end justify-between">
+          <span class="text-2xl font-bold">{{ reports.length }}</span>
+          <q-icon name="inventory" size="xs" color="gray-3" />
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm lg:col-span-1 h-fit">
+        <h2 class="text-sm font-bold mb-4">Distribuição de Status</h2>
+        <div class="space-y-4">
+          <div v-for="s in statusChartData" :key="s.label">
+            <div class="flex justify-between text-xs mb-1">
+              <span>{{ s.label }}</span>
+              <span class="font-bold">{{ s.value }}</span>
+            </div>
+            <q-linear-progress :value="s.percent" :color="s.color" rounded size="8px" />
           </div>
         </div>
-      </q-page>
-    </q-page-container>
-  </q-layout>
+      </div>
+
+      <div
+        class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+      >
+        <q-table
+          flat
+          :rows="reports"
+          :columns="columns"
+          row-key="id"
+          :loading="loading"
+          v-model:pagination="pagination"
+          :rows-per-page-options="[0]"
+          virtual-scroll
+          class="my-sticky-header-table h-[400px]"
+        >
+          <template v-slot:body-cell-status="props">
+            <q-td :props="props">
+              <div
+                :class="`w-2 h-2 rounded-full inline-block mr-2 bg-${getStatusColor(props.value)}`"
+              ></div>
+              <span class="text-xs">{{ getStatusLabel(props.value) }}</span>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                flat
+                round
+                size="sm"
+                color="primary"
+                icon="launch"
+                @click="goToDetails(props.row.id)"
+              />
+            </q-td>
+          </template>
+        </q-table>
+      </div>
+    </div>
+  </q-page>
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from 'src/stores/auth';
-import { onMounted, ref } from 'vue';
-import { api } from 'src/boot/axios';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-
-interface Coluna {
-  name: string;
-  label: string;
-  field: string;
-  align?: 'left' | 'center' | 'right';
-  sortable?: boolean;
-}
-
-interface Ocorrência {
-  id: number;
-  tipo_id: number;
-  location?: {
-    address: string;
-  };
-  photos?: string[];
-  date: string;
-  status: number;
-}
+import { ReportService } from 'src/services/ReportService';
+import type { Report } from 'src/models/Report';
+import { date } from 'quasar';
 
 const router = useRouter();
-const authStore = useAuthStore();
 
-const today = new Date();
-const day = today.getDate();
-const month = today.toLocaleDateString(undefined, { month: 'short' });
-
+const reports = ref<Report[]>([]);
 const loading = ref(false);
-const occurrence = ref<Ocorrência[]>([]);
 
-const goToDetails = (id: number) => {
-  void router.push(`/admin/report/${id}`);
+// Configura a paginação para "infinito" (0 = todos)
+const pagination = ref({
+  rowsPerPage: 0,
+  sortBy: 'date',
+  descending: true,
+});
+
+// --- Correção da Lógica de Datas ---
+const parseDate = (dateStr: string) => {
+  // Tenta extrair DD/MM/YYYY (comum no Brasil)
+  // Se o formato no banco for diferente (ex: YYYY-MM-DD), o extractDate ajusta
+  const extracted = date.extractDate(dateStr, 'DD/MM/YYYY');
+  // Se falhar (retornar data inválida), tenta criar new Date direto
+  return extracted.toString() === 'Invalid Date' ? new Date(dateStr) : extracted;
 };
 
-const columns: Coluna[] = [
-  { name: 'id', align: 'left', label: 'id', field: 'id' },
-  { name: 'type', label: 'Categoria', field: 'tipo_id', align: 'left' },
-  { name: 'status', label: 'Status', field: 'status', align: 'center' },
-  { name: 'data', label: 'Data', field: 'date', align: 'center' },
-  { name: 'action', label: 'Ações', field: 'id', align: 'right' },
+const stats = computed(() => {
+  const now = new Date();
+
+  return {
+    todayCount: reports.value.filter((r) => {
+      const rDate = parseDate(r.date);
+      return date.isSameDate(rDate, now, 'days');
+    }).length,
+
+    overdueCount: reports.value.filter((r) => {
+      if (r.status !== 1) return false; // Apenas pendentes
+      const rDate = parseDate(r.date);
+      const diff = date.getDateDiff(now, rDate, 'days');
+      return diff > 3; // Mais de 3 dias de diferença
+    }).length,
+
+    inProgressCount: reports.value.filter((r) => r.status === 2).length,
+  };
+});
+
+const statusChartData = computed(() => {
+  const total = reports.value.length || 1;
+  const countByStatus = (s: number) => reports.value.filter((r) => r.status === s).length;
+
+  return [
+    {
+      label: 'Pendentes',
+      value: countByStatus(1),
+      percent: countByStatus(1) / total,
+      color: 'negative',
+    },
+    {
+      label: 'Em Análise',
+      value: countByStatus(2),
+      percent: countByStatus(2) / total,
+      color: 'warning',
+    },
+    {
+      label: 'Resolvidos',
+      value: countByStatus(3),
+      percent: countByStatus(3) / total,
+      color: 'positive',
+    },
+  ];
+});
+
+const columns = [
+  { name: 'date', align: 'left' as const, label: 'Data', field: 'date', sortable: true },
+  { name: 'type', align: 'left' as const, label: 'Tipo', field: 'type_id', sortable: true },
+  { name: 'status', align: 'left' as const, label: 'Status', field: 'status', sortable: true },
+  { name: 'action', align: 'right' as const, label: '', field: 'id' },
 ];
 
-const fetchReport = async () => {
+const loadDashboard = async () => {
   loading.value = true;
   try {
-    const res = await api.get('/reports');
-    occurrence.value = res.data;
+    reports.value = await ReportService.getAll();
   } catch (e) {
     console.error('Erro ao buscar ocorrências', e);
   } finally {
@@ -109,15 +181,13 @@ const fetchReport = async () => {
   }
 };
 
+const goToDetails = (id: number) => void router.push(`/admin/report/${id}`);
+
 const getStatusColor = (status: number) =>
-  ({ 1: 'negative', 2: 'warning', 3: 'positive' })[status] || 'grey';
+  ({ 1: 'red-500', 2: 'orange-500', 3: 'green-500' })[status] || 'gray-400';
 
-const getStatusLabel = (status: number) => {
-  const labels: Record<number, string> = { 1: 'Pendente', 2: 'Em análise', 3: 'Resolvido' };
-  return labels[status] || 'Desconhecido';
-};
+const getStatusLabel = (status: number) =>
+  ({ 1: 'Pendente', 2: 'Em análise', 3: 'Resolvido' })[status] || 'N/A';
 
-onMounted(() => {
-  void fetchReport();
-});
+onMounted(loadDashboard);
 </script>

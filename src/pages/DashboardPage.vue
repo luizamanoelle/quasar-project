@@ -5,74 +5,103 @@
     <q-page-container>
       <q-page>
         <!--header-->
-        <div class="m-6 md:pt-10">
-          <div class="text-center">
-            <span class="text-2xl md:text-4xl"
-              >{{ $t('dashboard.greeting') }}, {{ authStore.user?.name || 'User' }}</span
-            >
-            <p class="text-grey-7">{{ $t('dashboard.today') }} {{ day }} {{ month }}</p>
-          </div>
+        <header class="m-6 md:pt-10 text-center">
+          <span class="text-2xl md:text-4xl"
+            >{{ $t('dashboard.greeting') }}, {{ authStore.user?.name || 'User' }}</span
+          >
+          <p class="text-gray-500">{{ $t('dashboard.today') }} {{ day }} {{ month }}</p>
 
           <q-separator color="black" inset class="full-width q-my-md" />
 
           <!--mapa-->
           <GeoLocation />
-        </div>
+        </header>
 
         <!--localização---->
-        <div class="text-center text-bold text-xl md:text-3xl py-4">
-          <span>{{ $t('dashboard.location') }} {{ locationStore.address.city }}</span>
+        <section class="text-center">
+          <div class="text-center text-bold text-xl md:text-3xl py-4">
+            <span>{{ $t('dashboard.location') }} {{ locationStore.address.city }}</span>
+          </div>
+        </section>
+
+        <!--filtros-->
+        <div class="flex justify-center q-mb-lg">
+          <q-btn-toggle
+            v-model="filterMode"
+            flat
+            stretch
+            toggle-color="primary"
+            :options="[
+              { label: 'Todos os Relatos', value: 'all' },
+              { label: 'Meus Relatos', value: 'my' },
+            ]"
+          />
         </div>
 
         <!--cards-->
-        <div
-          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 w-full px-6"
-        >
+        <div class="px-6 pb-10">
           <!--loading-->
-          <div v-if="loading" class="flex flex-center">
+          <div v-if="loading" class="flex justify-center items-center">
             <q-spinner-dots color="primary" size="40px" />
           </div>
 
           <!-- se o loading terminar e as reports nao estiverem vazias mostra-->
-          <template v-else-if="occurrence.length > 0">
-            <div v-for="item in occurrence" :key="item.id">
-              <q-card
-                bordered
-                class="bg-white h-full flex flex-col overflow-hidden border-gray-100 p-2"
-              >
-                <q-img
-                  v-if="item.photos && item.photos.length > 0"
-                  :src="item.photos[0]"
-                  class="h-35"
-                  fit="cover"
-                />
+          <div
+            v-else-if="filteredReports.length > 0"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+          >
+            <q-card
+              v-for="report in filteredReports"
+              :key="report.id"
+              flat
+              bordered
+              class="flex flex-col h-full hover:shadow-md transition-shadow duration-200 border-gray-200"
+            >
+              <q-img
+                v-if="report.photos?.length"
+                :src="report.photos[0]"
+                class="h-40"
+                fit="cover"
+              />
+              <div v-else class="h-40 bg-gray-100 flex items-center justify-center">
+                <q-icon name="image_not_supported" size="md" color="grey-4" />
+              </div>
 
-                <q-card-section class="q-pa-sm">
-                  <div class="flex justify-between items-center no-wrap full-width">
-                    <div class="text-xs font-bold uppercase text-black truncate">
-                      {{ getName(item.type_id) }}
-                    </div>
-
-                    <div
-                      :class="`bg-${getStatusColor(item.status)}`"
-                      class="rounded-full w-3 h-3 ml-2 flex-shrink-0"
-                    ></div>
-                  </div>
-
-                  <div class="text-xs py-1 text-gray-600 full-width">
-                    {{ item.location?.address || 'Endereço não disponível' }}
-                  </div>
-                </q-card-section>
-
-                <q-card-actions class="flex justify-between items-center mt-auto q-px-sm q-pb-sm">
-                  <span class="text-xs text-gray-500">
-                    {{ item.date }}
+              <q-card-section class="flex-grow p-4">
+                <div class="flex justify-between items-start mb-2">
+                  <span
+                    class="text-xs font-bold uppercase tracking-wider text-gray-700 truncate max-w-[80%]"
+                  >
+                    {{ getReportTypeName(report.type_id) }}
                   </span>
-                </q-card-actions>
-              </q-card>
-            </div>
-          </template>
+                  <div
+                    :class="statusColorMap[report.status] || 'bg-gray-400'"
+                    class="w-3 h-3 rounded-full shadow-sm mt-1"
+                    title="Status"
+                  ></div>
+                </div>
+
+                <p class="text-sm text-gray-600 line-clamp-2">
+                  {{ report.location?.address || 'Endereço não disponível' }}
+                </p>
+              </q-card-section>
+
+              <q-separator color="gray-100" />
+
+              <q-card-actions class="px-4 py-3 bg-gray-50/50">
+                <time class="text-xs text-gray-400 font-medium">
+                  {{ report.date }}
+                </time>
+              </q-card-actions>
+            </q-card>
+          </div>
+
+          <div v-else class="text-center py-20 text-gray-400">
+            <q-icon name="assignment_late" size="lg" />
+            <p class="mt-2 text-lg italic">Nenhum relato encontrado.</p>
+          </div>
         </div>
+
         <!--ordem de hierarquia das page-->
       </q-page>
     </q-page-container>
@@ -81,49 +110,49 @@
 
 <script setup lang="ts">
 import { useLocationStore } from 'src/stores/location';
-import { ref, onMounted } from 'vue';
-import { api } from 'src/boot/axios';
+import { ref, onMounted, computed } from 'vue';
 import { useAuthStore } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
 import GeoLocation from 'src/components/GeoLocation.vue';
+import { ReportService } from 'src/services/ReportService';
+import type { Report as CityReport } from 'src/models/Report';
 
 const { t } = useI18n();
-
-interface Ocorrência {
-  id: number;
-  type_id: number;
-  location?: {
-    address: string;
-  };
-  photos?: string[];
-  date: string;
-  status: number;
-}
-
 const locationStore = useLocationStore();
 const authStore = useAuthStore();
+
+const filterMode = ref<'all' | 'my'>('all');
+
+const reports = ref<CityReport[]>([]);
+const loading = ref(true);
 
 const today = new Date();
 const day = today.getDate();
 const month = today.toLocaleDateString(undefined, { month: 'short' });
 
-const occurrence = ref<Ocorrência[]>([]);
-const loading = ref(true);
+const filteredReports = computed(() => {
+  if (filterMode.value === 'my') {
+    return reports.value.filter((report) => report.user_id === authStore.user?.id);
+  }
+  return reports.value;
+});
 
-const getStatusColor = (status: number) =>
-  ({ 1: 'negative', 2: 'warning', 3: 'positive' })[status] || 'grey';
+const statusColorMap: Record<number, string> = {
+  1: 'bg-red-400',
+  2: 'bg-yellow-400',
+  3: 'bg-green-400',
+};
 
-const getName = (id: number | string) => {
+const getReportTypeName = (id: number | string) => {
   const key = `dashboard.types.${id}`;
   // t() retorna a tradução; se não achar a chave do ID, retorna 'General'
   return t(key) !== key ? t(key) : t('dashboard.types.general');
 };
 
-const fetchreports = async () => {
+const loadDashboard = async () => {
   loading.value = true;
   try {
-    const res = await api.get('/reports');
-    occurrence.value = res.data;
+    reports.value = await ReportService.getAll();
   } catch (e) {
     console.error('Erro ao buscar ocorrências', e);
   } finally {
@@ -132,6 +161,6 @@ const fetchreports = async () => {
 };
 
 onMounted(() => {
-  void fetchreports();
+  void loadDashboard();
 });
 </script>
