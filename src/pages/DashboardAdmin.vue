@@ -1,7 +1,9 @@
 <template>
   <q-page class="bg-gray-50 p-4 md:p-6">
+    <!--infos-->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-      <div class="bg-blue-500 p-3 rounded-lg border border-gray-200 shadow-sm">
+      <!--novos-->
+      <div class="p-3 bg-blue-100 rounded-lg">
         <div class="text-[10px] uppercase font-bold mb-1">Novos Hoje</div>
         <div class="flex items-end justify-between">
           <span class="text-2xl font-bold">{{ stats.todayCount }}</span>
@@ -9,7 +11,8 @@
         </div>
       </div>
 
-      <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+      <!--críticos-->
+      <div class="bg-red-100 p-3 rounded-lg">
         <div class="text-[10px] uppercase font-bold text-red-500 mb-1">Críticos (+3 dias)</div>
         <div class="flex items-end justify-between">
           <span class="text-2xl font-bold">{{ stats.overdueCount }}</span>
@@ -17,7 +20,8 @@
         </div>
       </div>
 
-      <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+      <!--em analise-->
+      <div class="bg-orange-100 p-3 rounded-lg">
         <div class="text-[10px] uppercase font-bold text-orange-500 mb-1">Em Análise</div>
         <div class="flex items-end justify-between">
           <span class="text-2xl font-bold">{{ stats.inProgressCount }}</span>
@@ -25,7 +29,8 @@
         </div>
       </div>
 
-      <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
+      <!--total-->
+      <div class="bg-gray-200 p-3 rounded-lg">
         <div class="text-[10px] uppercase font-bold text-gray-500 mb-1">Total Geral</div>
         <div class="flex items-end justify-between">
           <span class="text-2xl font-bold">{{ reports.length }}</span>
@@ -34,9 +39,9 @@
       </div>
     </div>
 
+    <!--status-->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm lg:col-span-1 h-fit">
-        <h2 class="text-sm font-bold mb-4">Distribuição de Status</h2>
+      <div class="bg-white p-4 rounded-lg lg:col-span-1">
         <div class="space-y-4">
           <div v-for="s in statusChartData" :key="s.label">
             <div class="flex justify-between text-xs mb-1">
@@ -48,9 +53,8 @@
         </div>
       </div>
 
-      <div
-        class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
-      >
+      <!--tabela-->
+      <div class="lg:col-span-2">
         <q-table
           flat
           :rows="reports"
@@ -60,17 +64,8 @@
           v-model:pagination="pagination"
           :rows-per-page-options="[0]"
           virtual-scroll
-          class="my-sticky-header-table h-[400px]"
         >
-          <template v-slot:body-cell-status="props">
-            <q-td :props="props">
-              <div
-                :class="`w-2 h-2 rounded-full inline-block mr-2 bg-${getStatusColor(props.value)}`"
-              ></div>
-              <span class="text-xs">{{ getStatusLabel(props.value) }}</span>
-            </q-td>
-          </template>
-
+          <!--reportview-->
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
               <q-btn
@@ -101,7 +96,6 @@ const router = useRouter();
 const reports = ref<Report[]>([]);
 const loading = ref(false);
 
-// Configura a paginação para "infinito" (0 = todos)
 const pagination = ref({
   rowsPerPage: 0,
   sortBy: 'date',
@@ -182,12 +176,6 @@ const loadDashboard = async () => {
 };
 
 const goToDetails = (id: number) => void router.push(`/admin/report/${id}`);
-
-const getStatusColor = (status: number) =>
-  ({ 1: 'red-500', 2: 'orange-500', 3: 'green-500' })[status] || 'gray-400';
-
-const getStatusLabel = (status: number) =>
-  ({ 1: 'Pendente', 2: 'Em análise', 3: 'Resolvido' })[status] || 'N/A';
 
 onMounted(loadDashboard);
 </script>

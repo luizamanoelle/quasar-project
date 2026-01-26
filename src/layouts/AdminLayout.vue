@@ -2,34 +2,21 @@
   <q-layout view="hHh lpR fFf" class="bg-gray-50">
     <q-header bordered class="bg-white text-gray-800 border-gray-200 h-16 flex items-center">
       <q-toolbar>
-        <div class="flex items-center gap-4 justify-between w-full">
-          <div class="flex items-center gap-2">
-            <q-btn-dropdown
-              flat
-              no-caps
-              dense
-              class="text-gray-700 hover:text-primary transition-colors"
-            >
+        <div class="flex items-center justify-between w-full">
+          <!--usuario-->
+          <div class="flex items-center">
+            <q-btn-dropdown flat no-caps>
               <template v-slot:label>
-                <div class="flex items-center gap-2">
-                  <q-avatar size="32px" class="bg-blue-100 text-blue-600 font-bold shadow-sm">
+                <div class="flex items-center">
+                  <q-avatar size="34px" class="bg-purple-100 text-primary font-bold">
                     {{ userInitial }}
                   </q-avatar>
-                  <div class="hidden md:block text-sm font-medium">
-                    {{ authStore.user?.name || 'Administrador' }}
-                  </div>
                 </div>
               </template>
 
-              <q-list
-                class="min-w-[150px] border border-gray-100 shadow-lg rounded-md overflow-hidden"
-              >
-                <q-item
-                  clickable
-                  v-close-popup
-                  @click="handleLogout"
-                  class="hover:bg-red-50 text-red-600"
-                >
+              <!--sair-->
+              <q-list class="border border-gray-100 shadow-lg rounded">
+                <q-item clickable v-close-popup @click="handleLogout">
                   <q-item-section avatar>
                     <q-icon name="logout" size="xs" />
                   </q-item-section>
@@ -40,38 +27,20 @@
               </q-list>
             </q-btn-dropdown>
           </div>
-          <div
-            class="flex items-center gap-2 text-gray-500 bg-gray-100 px-4 py-1 rounded-full text-sm font-medium"
-          >
-            <q-icon name="event" size="xs" />
+
+          <!--data-->
+          <div class="text-gray-500 text-sm font-medium">
             <span class="capitalize">{{ currentDate }}</span>
           </div>
 
-          <q-btn
-            flat
-            round
-            dense
-            color="grey-7"
-            icon="refresh"
-            class="hover:bg-gray-100 transition-colors"
-            @click="handleRefresh"
-          >
-            <q-tooltip class="bg-gray-800 text-xs">Atualizar Página</q-tooltip>
-          </q-btn>
+          <!--refresh-->
+          <q-btn flat round color="grey-7" icon="refresh" @click="handleRefresh" />
         </div>
       </q-toolbar>
     </q-header>
 
     <q-page-container>
-      <router-view v-slot="{ Component }">
-        <transition
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-          mode="out-in"
-        >
-          <component :is="Component" />
-        </transition>
-      </router-view>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -88,7 +57,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const { t } = useI18n();
 
-// Data formatada para o centro
+//data formatada
 const currentDate = computed(() => {
   const date = new Date();
   return date.toLocaleDateString(undefined, {
@@ -98,15 +67,19 @@ const currentDate = computed(() => {
   });
 });
 
+//pega só a inicial do usuario
 const userInitial = computed(() => {
   const name = authStore.user?.name || 'A';
+  //uso do charAt pra pegar só a inicial
   return name.charAt(0).toUpperCase();
 });
 
+//reload na page
 const handleRefresh = () => {
   window.location.reload();
 };
 
+//logout
 const handleLogout = () => {
   $q.dialog({
     title: t('layout.logout'),

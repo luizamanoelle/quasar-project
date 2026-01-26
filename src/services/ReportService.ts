@@ -17,7 +17,7 @@ export const ReportService = {
     return res.data;
   },
 
-  // --- NOVOS MÉTODOS ---
+  //pega por id
   async getById(id: string | number): Promise<Report> {
     const res = await api.get<Report>(`/reports/${id}`);
     return res.data;
