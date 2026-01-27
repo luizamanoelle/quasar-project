@@ -82,7 +82,7 @@
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
               <q-btn
-                aria-label="$t('admin.view')"
+                :aria-label="$t('admin.view')"
                 flat
                 round
                 size="sm"
