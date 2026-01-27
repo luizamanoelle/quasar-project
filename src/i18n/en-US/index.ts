@@ -33,6 +33,11 @@ export default {
       5: 'Traffic',
       general: 'General',
     },
+    filter: {
+      1: 'All Reports',
+      2: 'My Reports',
+    },
+    nothing: 'No reports found.',
   },
 
   layout: {
@@ -43,6 +48,8 @@ export default {
     logout: 'Logout',
     confirm: 'Do you really want to leave the application?',
     success: 'You have logged out of your account.',
+    open: 'Open exit option',
+    refresh: 'Refresh page',
   },
   register: {
     create: 'Create Account',
@@ -82,6 +89,8 @@ export default {
 
     cancel: {
       label: 'No, continue',
+      photo: 'Delete taken photo',
+      description: 'Clear description',
     },
 
     ok: {
@@ -90,6 +99,99 @@ export default {
 
     notify: {
       message: 'Report canceled',
+    },
+
+    back: 'Back to dashboard',
+    close: 'Close Report',
+    takeaphoto: 'Take evidence photo',
+  },
+
+  camera: {
+    title: 'Take Photo',
+    autoSaveHint: 'The image will be automatically saved to your report.',
+    comp: {
+      title: 'Position the issue in the center',
+      message: 'Photo added!',
+      load: 'Choose from Gallery',
+    },
+  },
+  common: {
+    close: 'Close',
+    back: 'Back',
+    confirm: 'Confirm',
+  },
+
+  admin: {
+    news: 'New Today',
+    critical: 'Critical (+3 days)',
+    analysis: 'Under Review',
+    total: 'Overall Total',
+    view: 'View Report',
+    status: {
+      1: 'Pending',
+      2: 'Under Review',
+      3: 'Resolved',
+    },
+    columns: {
+      date: 'Date',
+      type: 'Type',
+      status: 'Status',
+    },
+  },
+
+  view: {
+    date: 'Registered on',
+    photos: 'Evidence',
+    location: 'Location',
+    description: 'Description',
+    update: 'Update Report',
+    status: {
+      1: {
+        label: 'Pending',
+        description: 'Waiting for initial team screening.',
+      },
+      2: {
+        label: 'Under Review',
+        description: 'Technicians are evaluating the solution.',
+      },
+      3: {
+        label: 'Resolved',
+        description: 'The issue has been successfully resolved.',
+      },
+      confirm: 'Status updated!',
+      confirmfail: 'Error while saving.',
+    },
+  },
+
+  categoryHelp: {
+    title: 'How to identify the category?',
+    cover: 'What it includes',
+    items: {
+      infrastructure: {
+        title: 'Urban Infrastructure',
+        subtitle: 'Focuses on physical road maintenance.',
+        description: 'Potholes, broken sidewalks, drains, and signage.',
+      },
+      cleaning: {
+        title: 'Cleaning and Environment',
+        subtitle: 'Public health and city appearance.',
+        description: 'Illegal trash dumping, debris, tree pruning, and overgrown grass.',
+      },
+      lighting: {
+        title: 'Public Lighting',
+        subtitle: 'Essential for nighttime safety.',
+        description: 'Burned-out lamps, fallen poles, or dark areas.',
+      },
+      sanitation: {
+        title: 'Sanitation and Water',
+        subtitle: 'Involves water and sewage systems.',
+        description: 'Leaks, sewage backflow, or water supply outages.',
+      },
+      traffic: {
+        title: 'Mobility and Traffic',
+        subtitle: 'Vehicle and pedestrian flow.',
+        description: 'Broken traffic lights, abandoned cars, or blocked bike lanes.',
+      },
     },
   },
 };

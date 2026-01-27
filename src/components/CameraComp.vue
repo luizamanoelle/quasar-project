@@ -16,7 +16,7 @@
 
     <div class="flex flex-col items-center gap-8 mt-5">
       <span class="text-slate-400 text-xs font-bold uppercase tracking-widest">
-        Posicione o problema no centro
+        {{ $t('camera.comp.title') }}
       </span>
 
       <!--botao pra carregar uma imagem-->
@@ -26,7 +26,7 @@
           text-color="black"
           color="white"
           icon="collections"
-          label="Escolher da Galeria"
+          :label="$t('camera.comp.load')"
           @click="triggerFilePicker"
         />
 
@@ -34,7 +34,7 @@
       </div>
 
       <button
-        aria-label="Tirar foto"
+        :aria-label="$t('camera.title')"
         @click="TakePicture"
         class="w-20 h-20 rounded-full border-4 border-white flex items-center justify-center p-1"
       >
@@ -92,7 +92,7 @@ const TakePicture = () => {
   const photoBase64 = canvas.value.toDataURL('image/jpeg', 0.8);
 
   $q.notify({
-    message: 'Foto adicionada!',
+    message: "$t('camera.comp.message')",
     color: 'positive',
     icon: 'photo_camera',
     timeout: 500,
@@ -113,7 +113,7 @@ function setStream(stream: MediaStream) {
         //desenha os frames
         requestAnimationFrame(draw);
       })
-      .catch((err) => console.error('Erro ao dar play no vídeo:', err));
+      .catch((err) => console.error('Error', err));
   }
 }
 

@@ -9,13 +9,13 @@
             icon="arrow_back"
             @click="$router.push('/citizen/dashboard')"
             color="grey-9"
-            aria-label="Voltar para o dashboard"
+            :aria-label="$t('report.back')"
           />
           <span class="text-lg md:text-4xl font-bold"> {{ $t('report.title') }} </span>
 
           <q-btn
             flat
-            aria-label="Fechar Relato"
+            :aria-label="$t('report.close')"
             icon="close"
             @click="confirmCancel"
             color="grey-9"
@@ -40,12 +40,6 @@
             </p>
           </div>
         </section>
-
-        <!--endereço-->
-        <!--<span class="flex flex-center text-center text-sm md:text-3xl py-4">
-            {{ locationStore.address.road }}, {{ locationStore.address.houseNumber }} -
-            {{ locationStore.address.neighbourhood }}
-          </span>-->
 
         <section>
           <!--titulo-->
@@ -96,14 +90,14 @@
 
         <!--botao da foto-->
         <section class="mt-2">
-          <label class="text-bold text-base">Evidências (Máx 3)</label>
+          <label class="text-bold text-base">{{ $t('report.phototitle') }}</label>
           <div class="grid grid-cols-3 gap-3 mt-2">
             <div v-for="(photo, index) in locationStore.photos" :key="index" class="relative group">
               <!--imagem-->
               <q-img :src="photo" class="h-25 w-full" fit="contain" />
               <!--botao de excluir-->
               <q-btn
-                aria-label="Excluir foto tirada"
+                :aria-label="$t('report.cancel.photo')"
                 round
                 color="negative"
                 icon="close"
@@ -118,7 +112,7 @@
               v-if="locationStore.photos.length < 3"
               @click="$router.push('/citizen/cam')"
               class="h-24 border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center text-slate-400"
-              aria-label="Tirar foto da evidência"
+              :aria-label="$t('report.takeaphoto')"
             >
               <q-icon name="add_a_photo" size="lg" />
               <span class="text-[13px] font-bold mt-1">{{ locationStore.photos.length }}/3</span>
@@ -144,7 +138,7 @@
               <template v-slot:append>
                 <q-icon
                   name="close"
-                  aria-label="Apagar descrição"
+                  :aria-label="$t('report.cancel.description')"
                   @click="reportStore.description = ''"
                   class="cursor-pointer"
                 />
@@ -258,7 +252,7 @@ const confirmCancel = () => {
     void router.push('/citizen/dashboard');
 
     $q.notify({
-      message: t('report.notify.messa'),
+      message: t('report.notify.message'),
       color: 'grey-8',
       icon: 'close',
     });

@@ -21,18 +21,18 @@ const marker = ref<L.Marker>();
 const locationStore = useLocationStore();
 
 onMounted(() => {
-  //inicia o mapa 
+  //inicia o mapa
   if (mapContainer.value) {
     map.value = L.map(mapContainer.value).setView([51.505, -0.09], 13);
 
-    //visual do mapa 
+    //visual do mapa
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
 
       attribution: '&copy; OpenStreetMap',
     }).addTo(map.value);
 
-    //garante q o mapa carrega antes de pegar a movimentação 
+    //garante q o mapa carrega antes de pegar a movimentação
     void nextTick(() => {
       getLocation();
     });
@@ -92,7 +92,7 @@ function getLocation() {
           } else {
             marker.value = L.marker([lat.value, lng.value], { draggable: true })
               .addTo(map.value)
-              //corrigir manualmente 
+              //corrigir manualmente
               .on('dragend', (event) => {
                 const newPos = event.target.getLatLng();
                 lat.value = newPos.lat;

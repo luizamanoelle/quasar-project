@@ -32,8 +32,8 @@
             stretch
             toggle-color="primary"
             :options="[
-              { label: 'Todos os Relatos', value: 'all' },
-              { label: 'Meus Relatos', value: 'my' },
+              { label: `${t('dashboard.filter.1')}`, value: 'all' },
+              { label: `${t('dashboard.filter.2')}`, value: 'my' },
             ]"
           />
         </div>
@@ -82,7 +82,7 @@
                 </div>
 
                 <p class="text-sm text-gray-600 line-clamp-2">
-                  {{ report.location?.address || 'Endereço não disponível' }}
+                  {{ report.location?.address }}
                 </p>
               </q-card-section>
 
@@ -98,7 +98,7 @@
 
           <div v-else class="text-center py-20 text-gray-400">
             <q-icon name="assignment_late" size="lg" />
-            <p class="mt-2 text-lg italic">Nenhum relato encontrado.</p>
+            <p class="mt-2 text-lg italic">{{ $t('dashboard.nothing') }}</p>
           </div>
         </div>
 
@@ -154,7 +154,7 @@ const loadDashboard = async () => {
   try {
     reports.value = await ReportService.getAll();
   } catch (e) {
-    console.error('Erro ao buscar ocorrências', e);
+    console.error('Error', e);
   } finally {
     loading.value = false;
   }

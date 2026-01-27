@@ -1,19 +1,19 @@
 <template>
   <q-dialog v-model="model" persistent>
     <q-card style="width: 350px; max-width: 80vw">
-      <q-bar class="bg-primary text-black">
-        <div class="my-font2">Como saber a categoria?</div>
+      <q-bar class="bg-primary text-black q-pa-lg">
+        <div>{{ $t('categoryHelp.title') }}</div>
         <q-space />
         <q-btn dense flat icon="close" v-close-popup />
       </q-bar>
 
-      <q-card-section class="q-pa-md my-font3">
+      <q-card-section class="q-pa-lg my-font3">
         <div v-for="item in instructions" :key="item.title" class="q-mb-md">
           <strong class="text-bold">{{ item.id }}. {{ item.title }}</strong
           ><br />
           <span class="text-caption text-grey-8">{{ item.subtitle }}</span
           ><br />
-          <strong>O que abrange:</strong> {{ item.description }}
+          <strong>{{ $t('categoryHelp.cover') }}</strong> {{ item.description }}
         </div>
       </q-card-section>
     </q-card>
@@ -23,37 +23,40 @@
 <script setup lang="ts">
 // defineModel facilita a sincronização do v-model entre pai e filho no Vue 3.4+
 const model = defineModel<boolean | null>({ default: false });
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const instructions = [
   {
     id: 1,
-    title: 'Infraestrutura Urbana',
-    subtitle: 'Foca na manutenção física das vias.',
-    description: 'Buracos no asfalto, calçadas quebradas, bueiros e sinalização.',
+    title: `${t('categoryHelp.items.infrastructure.title')}`,
+    subtitle: `${t('categoryHelp.items.infrastructure.subtitle')}`,
+    description: `${t('categoryHelp.items.infrastructure.description')}`,
   },
   {
     id: 2,
-    title: 'Iluminação Pública',
-    subtitle: 'Essencial para a segurança à noite.',
-    description: 'Lâmpadas queimadas, postes caídos ou trechos às escuras.',
+    title: `${t('categoryHelp.items.cleaning.title')}`,
+    subtitle: `${t('categoryHelp.items.cleaning.subtitle')}`,
+    description: `${t('categoryHelp.items.cleaning.description')}`,
   },
   {
     id: 3,
-    title: 'Limpeza e Meio Ambiente',
-    subtitle: 'Saúde pública e estética da cidade.',
-    description: 'Lixo irregular, entulho, poda de árvores e mato alto.',
+    title: `${t('categoryHelp.items.lighting.title')}`,
+    subtitle: `${t('categoryHelp.items.lighting.subtitle')}`,
+    description: `${t('categoryHelp.items.lighting.description')}`,
   },
   {
     id: 4,
-    title: 'Saneamento e Água',
-    subtitle: 'Envolve a rede de águas e esgoto.',
-    description: 'Vazamentos, refluxo de esgoto ou falta de abastecimento.',
+    title: `${t('categoryHelp.items.sanitation.title')}`,
+    subtitle: `${t('categoryHelp.items.sanitation.subtitle')}`,
+    description: `${t('categoryHelp.items.sanitation.description')}`,
   },
   {
     id: 5,
-    title: 'Mobilidade e Trânsito',
-    subtitle: 'Fluxo de veículos e pedestres.',
-    description: 'Semáforos estragados, carros abandonados ou ciclovias obstruídas.',
+    title: `${t('categoryHelp.items.traffic.title')}`,
+    subtitle: `${t('categoryHelp.items.traffic.subtitle')}`,
+    description: `${t('categoryHelp.items.traffic.description')}`,
   },
 ];
 </script>

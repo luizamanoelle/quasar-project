@@ -5,27 +5,13 @@
         <div class="flex items-center justify-between w-full">
           <!--usuario-->
           <div class="flex items-center">
-            <q-btn-dropdown flat no-caps aria-label="Abrir opção de sair">
-              <template v-slot:label>
-                <div class="flex items-center">
-                  <q-avatar size="34px" class="bg-purple-100 text-primary font-bold">
-                    {{ userInitial }}
-                  </q-avatar>
-                </div>
-              </template>
-
-              <!--sair-->
-              <q-list class="border border-gray-100 shadow-lg rounded">
-                <q-item clickable v-close-popup @click="handleLogout">
-                  <q-item-section avatar>
-                    <q-icon name="logout" size="xs" />
-                  </q-item-section>
-                  <q-item-section>
-                    <span class="text-sm font-medium">{{ $t('layout.logout') }}</span>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
+            <q-btn flat round no-caps aria-label="$t('layout.open')" @click="drawer = !drawer">
+              <div class="flex items-center">
+                <q-avatar size="34px" class="bg-purple-100 text-primary font-bold">
+                  {{ userInitial }}
+                </q-avatar>
+              </div>
+            </q-btn>
           </div>
 
           <!--data-->
@@ -36,7 +22,7 @@
           <!--refresh-->
           <q-btn
             flat
-            aria-label="Atualizar a página"
+            :aria-label="$t('layout.refresh')"
             round
             color="grey-7"
             icon="refresh"
@@ -46,6 +32,29 @@
       </q-toolbar>
     </q-header>
 
+    <!--drawer sair-->
+    <q-drawer
+      v-model="drawer"
+      overlay
+      :width="150"
+      :breakpoint="200"
+      bordered
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-white'"
+    >
+      <div class="p-4">
+        <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Opções</div>
+
+        <q-item clickable @click="handleLogout">
+          <q-item-section avatar>
+            <q-icon name="logout" />
+          </q-item-section>
+          <q-item-section>
+            <span class="font-medium">{{ $t('layout.logout') }}</span>
+          </q-item-section>
+        </q-item>
+      </div>
+    </q-drawer>
+
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -53,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
@@ -63,6 +72,7 @@ const $q = useQuasar();
 const router = useRouter();
 const authStore = useAuthStore();
 const { t } = useI18n();
+const drawer = ref(false);
 
 //data formatada
 const currentDate = computed(() => {
@@ -91,18 +101,17 @@ const handleLogout = () => {
   $q.dialog({
     title: t('layout.logout'),
     message: t('layout.confirm'),
-    ok: { label: t('common.confirm'), flat: true, color: 'primary' },
-    cancel: { label: t('common.cancel'), flat: true, color: 'grey-8' },
+    cancel: true,
     persistent: true,
   }).onOk(() => {
+    //chama o logout
     authStore.logout();
-    void router.push('/login');
+    void router.push('/');
 
     $q.notify({
-      type: 'positive',
+      color: 'info',
       message: t('layout.success'),
-      position: 'top',
-      timeout: 2000,
+      icon: 'logout',
     });
   });
 };

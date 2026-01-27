@@ -8,12 +8,12 @@
 
           <!-- centro -->
           <div class="text-center">
-            <span class="text-h5 text-weight-light">Tirar Foto</span>
+            <span class="text-h5 text-weight-light">{{ $t('camera.title') }}</span>
           </div>
 
           <!-- direita -->
           <div class="flex justify-end">
-            <q-btn flat icon="close" @click="$router.back()" />
+            <q-btn flat icon="close" :aria-label="$t('common.close')" @click="$router.back()" />
           </div>
         </div>
 
@@ -22,7 +22,7 @@
         <CameraComp @captured="handlePhoto" />
         <footer class="mt-auto pt-6 text-center">
           <p class="text-slate-400 text-xs italic">
-            A imagem será salva automaticamente no seu relato.
+            {{ $t('camera.autoSaveHint') }}
           </p>
         </footer>
       </q-page>

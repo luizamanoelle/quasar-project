@@ -12,7 +12,7 @@
         <div class="md:pt-10 flex justify-between">
           <q-btn
             flat
-            aria-label="Voltar"
+            :aria-label="$t('common.back')"
             icon="arrow_back"
             @click="$router.push('/admin/dashboard')"
             color="grey-9"
@@ -20,9 +20,15 @@
           <span class="text-2xl md:text-4xl">
             {{ getReportTypeName(report.type_id) }}
           </span>
-          <q-btn flat aria-label="Fechar" icon="close" @click="confirmCancel" color="grey-9" />
+          <q-btn
+            flat
+            :aria-label="$t('common.back')"
+            icon="close"
+            @click="confirmCancel"
+            color="grey-9"
+          />
           <div class="flex items-center">
-            <p class="text-gray-500 text-sm">Registrado em {{ report.date }}</p>
+            <p class="text-gray-500 text-sm">{{ $t('view.date') }} {{ report.date }}</p>
           </div>
         </div>
 
@@ -45,7 +51,7 @@
         <section>
           <!--titulo e count-->
           <div class="flex items-center justify-between mb-2">
-            <span class="text-gray-800 text-2xl">Evidências</span>
+            <span class="text-gray-800 text-2xl">{{ $t('view.photos') }}</span>
             <span class="text-sm text-gray-400 bg-gray-200 px-2 py-1 rounded-full">{{
               report.photos?.length || 0
             }}</span>
@@ -75,9 +81,11 @@
                 <q-icon name="place" />
               </q-item-section>
               <q-item-section>
-                <q-item-label caption class="mb-1 uppercase">Localização</q-item-label>
+                <q-item-label caption class="mb-1 uppercase">{{
+                  $t('view.location')
+                }}</q-item-label>
                 <q-item-label class="font-semibold text-gray-800">
-                  {{ report.location?.address || 'Sem endereço' }}
+                  {{ report.location?.address }}
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -88,7 +96,9 @@
                 <q-icon name="description" />
               </q-item-section>
               <q-item-section>
-                <q-item-label caption class="mb-1 uppercase">Descrição</q-item-label>
+                <q-item-label caption class="mb-1 uppercase">{{
+                  $t('view.description')
+                }}</q-item-label>
                 <q-item-label class="text-gray-600 text-sm">
                   "{{ report.description }}"
                 </q-item-label>
@@ -101,7 +111,7 @@
       <!--att status-->
       <q-bottom-sheet v-model="mobileSheetOpen">
         <div class="p-6 pb-10">
-          <span class="text-3xl font-bold text-gray-900 text-center">Atualizar Ocorrência</span>
+          <span class="text-3xl font-bold text-gray-900 text-center">{{ $t('view.update') }}</span>
 
           <button
             v-for="opt in Object.values(STATUS_CONFIG)"
@@ -125,7 +135,7 @@
             <q-btn
               icon="las la-check"
               v-if="hasChanges"
-              label="Confirmar"
+              label="$t('common.confirm')"
               color="positive"
               class="w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex justify-right text-black"
               :loading="updating"
@@ -181,27 +191,27 @@ const getStatus = (s: number): StatusConfigItem => {
 const STATUS_CONFIG: Record<number, StatusConfigItem> = {
   1: {
     value: 1,
-    label: 'Pendente',
+    label: t('view.status.1.label'),
     color: 'red',
     icon: 'schedule',
     gradient: 'bg-gradient-to-br from-red-600 to-red-800 shadow-red-500/30',
-    description: 'Aguardando triagem inicial da equipe.',
+    description: t('view.status.1.description'),
   },
   2: {
     value: 2,
-    label: 'Em Análise',
+    label: t('view.status.2.label'),
     color: 'orange',
     icon: 'engineering',
     gradient: 'bg-gradient-to-br from-orange-400 to-orange-600 shadow-orange-500/30',
-    description: 'Técnicos avaliando a solução.',
+    description: t('view.status.2.description'),
   },
   3: {
     value: 3,
-    label: 'Resolvido',
+    label: t('view.status.3.label'),
     color: 'green',
     icon: 'check_circle',
     gradient: 'bg-gradient-to-br from-green-500 to-green-700 shadow-green-500/30',
-    description: 'O problema foi solucionado com sucesso.',
+    description: t('view.status.3.description'),
   },
 };
 
@@ -211,7 +221,7 @@ const hasChanges = computed(() => report.value && tempStatus.value !== report.va
 //nome da categoria
 const getReportTypeName = (id: string | number | undefined) => {
   if (!id) return 'Ocorrência';
-  return t(`dashboard.types.${id}`) || 'Ocorrência';
+  return t(`dashboard.types.${id}`);
 };
 
 // Ações
@@ -235,10 +245,10 @@ const confirmStatusChange = async () => {
     await ReportService.updateStatus(report.value.id, tempStatus.value);
     report.value.status = tempStatus.value;
     mobileSheetOpen.value = false;
-    $q.notify({ type: 'positive', message: 'Status atualizado!', position: 'top' });
+    $q.notify({ type: 'positive', message: t('view.status.confirm'), position: 'top' });
   } catch {
     console.error('Erro');
-    $q.notify({ type: 'negative', message: 'Erro ao salvar.' });
+    $q.notify({ type: 'negative', message: t('view.status.confirmfail') });
   } finally {
     updating.value = false;
   }
@@ -251,8 +261,8 @@ const openImage = (img: string) => {
 
 const confirmCancel = () => {
   $q.dialog({
-    title: t('report.titleCancel') || 'Cancelar',
-    message: t('report.message') || 'Deseja realmente sair?',
+    title: t('report.titleCancel'),
+    message: t('report.message'),
     cancel: true,
     persistent: true,
   }).onOk(() => {

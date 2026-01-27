@@ -33,6 +33,11 @@ export default {
       5: 'Trânsito',
       general: 'Geral',
     },
+    filter: {
+      1: 'Todos os Relatos',
+      2: 'Meus Relatos',
+    },
+    nothing: 'Nenhum relato encontrado.',
   },
 
   layout: {
@@ -43,6 +48,8 @@ export default {
     logout: 'Sair',
     confirm: 'Deseja realmente sair do aplicativo?',
     success: 'Voce saiu da conta.',
+    open: 'Abrir opção de sair',
+    refresh: 'Atualizar a página',
   },
 
   register: {
@@ -83,6 +90,8 @@ export default {
 
     cancel: {
       label: 'Não, continuar',
+      photo: 'Excluir foto tirada',
+      description: 'Apagar descrição',
     },
 
     ok: {
@@ -91,6 +100,100 @@ export default {
 
     notify: {
       message: 'Ocorrência cancelada',
+    },
+
+    back: 'Voltar para o dashboard',
+    close: 'Fechar Relato',
+    takeaphoto: 'Tirar foto da evidência',
+  },
+
+  camera: {
+    title: 'Tirar Foto',
+    autoSaveHint: 'A imagem será salva automaticamente no seu relato.',
+    comp: {
+      title: ' Posicione o problema no centro',
+      message: 'Foto adicionada!',
+      load: 'Escolher da Galeria',
+    },
+  },
+  common: {
+    close: 'Fechar',
+    back: 'Voltar',
+    confirm: 'Confirmar',
+  },
+
+  admin: {
+    news: 'Novos Hoje',
+    critical: 'Críticos (+3 dias)',
+    analysis: 'Em Análise',
+    total: 'Total Geral',
+    view: 'Visualizar Ocorrência',
+    status: {
+      1: 'Pendentes',
+      2: 'Em Análise',
+      3: 'Resolvidos',
+    },
+    columns: {
+      date: 'Data',
+      type: 'Tipo',
+      status: 'Status',
+    },
+  },
+
+  view: {
+    date: 'Registrado em',
+    photos: 'Evidências',
+    location: 'Localização',
+    description: 'Descrição',
+    update: 'Atualizar Ocorrência',
+    status: {
+      1: {
+        label: 'Pendente',
+        description: 'Aguardando triagem inicial da equipe.',
+      },
+      2: {
+        label: 'Em Análise',
+        description: 'Técnicos avaliando a solução.',
+      },
+      3: {
+        label: 'Resolvido',
+        description: 'O problema foi solucionado com sucesso.',
+      },
+
+      confirm: 'Status atualizado!',
+      confirmfail: 'Erro ao salvar.',
+    },
+  },
+
+  categoryHelp: {
+    title: 'Como saber a categoria?',
+    cover: 'O que abrange',
+    items: {
+      infrastructure: {
+        title: 'Infraestrutura Urbana',
+        subtitle: 'Foca na manutenção física das vias.',
+        description: 'Buracos no asfalto, calçadas quebradas, bueiros e sinalização.',
+      },
+      cleaning: {
+        title: 'Limpeza e Meio Ambiente',
+        subtitle: 'Saúde pública e estética da cidade.',
+        description: 'Lixo irregular, entulho, poda de árvores e mato alto.',
+      },
+      lighting: {
+        title: 'Iluminação Pública',
+        subtitle: 'Essencial para a segurança à noite.',
+        description: 'Lâmpadas queimadas, postes caídos ou trechos às escuras.',
+      },
+      sanitation: {
+        title: 'Saneamento e Água',
+        subtitle: 'Envolve a rede de águas e esgoto.',
+        description: 'Vazamentos, refluxo de esgoto ou falta de abastecimento.',
+      },
+      traffic: {
+        title: 'Mobilidade e Trânsito',
+        subtitle: 'Fluxo de veículos e pedestres.',
+        description: 'Semáforos estragados, carros abandonados ou ciclovias obstruídas.',
+      },
     },
   },
 };
