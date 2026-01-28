@@ -1,6 +1,10 @@
 <template>
   <q-layout view="hHh lpR fFf" class="bg-gray-50">
-    <q-header bordered class="bg-white text-gray-800 border-gray-200 h-16 flex items-center">
+    <q-header
+      bordered
+      class="text-gray-800 border-gray-200 h-16 flex items-center"
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-white'"
+    >
       <q-toolbar>
         <div class="flex items-center justify-between w-full">
           <!--usuario-->
@@ -52,6 +56,8 @@
             <span class="font-medium">{{ $t('layout.logout') }}</span>
           </q-item-section>
         </q-item>
+
+        <DarkModeToggle />
       </div>
     </q-drawer>
 
@@ -67,6 +73,7 @@ import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
+import DarkModeToggle from 'src/components/DarkModeToggle.vue';
 
 const $q = useQuasar();
 const router = useRouter();

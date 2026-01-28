@@ -13,6 +13,8 @@
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
 :root {
+  --background: #0000ff;
+
   --primary: #b57edc;
   --secondary: #26a69a;
   --accent: #fdfd96;
@@ -25,6 +27,8 @@
   --info: #ff6961;
   --warning: #ffae6a;
 }
+
+$background: #0000ff;
 
 $primary: var(--primary);
 $secondary: #26a69a;

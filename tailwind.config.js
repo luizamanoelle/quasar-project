@@ -4,6 +4,14 @@ module.exports = {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      screens: {
+        sm: '600px',
+        md: '1024px',
+        lg: '1440px',
+        xl: '1920px',
+      },
+      background: 'var(--background)',
+
       primary: 'var(--primary)',
       secondary: 'var(--secondary)',
       accent: 'var(--accent)',

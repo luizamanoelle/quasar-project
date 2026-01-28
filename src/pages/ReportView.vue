@@ -109,41 +109,40 @@
       </div>
 
       <!--att status-->
-      <q-bottom-sheet v-model="mobileSheetOpen">
-        <div class="p-6 pb-10">
-          <span class="text-3xl font-bold text-gray-900 text-center">{{ $t('view.update') }}</span>
 
-          <button
-            v-for="opt in Object.values(STATUS_CONFIG)"
-            :key="opt.value"
-            class="w-full p-2 rounded-3xl flex items-center gap-4 border-2"
-            :class="tempStatus === opt.value ? ` border-gray-500` : 'bg-white border-transparent '"
-            @click="tempStatus = opt.value"
-          >
-            <!--icons-->
-            <div :class="`bg-${opt.color}-100 text-${opt.color}-600 p-3 rounded-full`">
-              <q-icon :name="opt.icon" size="sm" />
-            </div>
-            <!--title-->
-            <div class="flex-1 text-left">
-              <div class="font-bold text-gray-900">{{ opt.label }}</div>
-            </div>
-          </button>
+      <div class="p-6 pb-10">
+        <span class="text-3xl font-bold text-gray-900 text-center">{{ $t('view.update') }}</span>
 
-          <!--confirmar troca de status-->
-          <div class="my-8 justify-items-end">
-            <q-btn
-              icon="las la-check"
-              v-if="hasChanges"
-              label="$t('common.confirm')"
-              color="positive"
-              class="w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex justify-right text-black"
-              :loading="updating"
-              @click="confirmStatusChange"
-            />
+        <button
+          v-for="opt in Object.values(STATUS_CONFIG)"
+          :key="opt.value"
+          class="w-full p-3 rounded-3xl flex items-center gap-5 border-2"
+          :class="tempStatus === opt.value ? ` border-gray-500` : 'bg-white border-transparent '"
+          @click="tempStatus = opt.value"
+        >
+          <!--icons-->
+          <div :class="`bg-${opt.color}-100 text-${opt.color}-600 p-3 rounded-full`">
+            <q-icon :name="opt.icon" size="sm" />
           </div>
+          <!--title-->
+          <div class="flex-1 text-left">
+            <div class="font-bold text-gray-900">{{ opt.label }}</div>
+          </div>
+        </button>
+
+        <!--confirmar troca de status-->
+        <div class="my-8 justify-items-end">
+          <q-btn
+            icon="las la-check"
+            v-if="hasChanges"
+            :label="$t('common.confirm')"
+            color="positive"
+            class="w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex justify-right text-black"
+            :loading="updating"
+            @click="confirmStatusChange"
+          />
         </div>
-      </q-bottom-sheet>
+      </div>
 
       <!--open image-->
       <q-dialog v-model="imageDialog" maximized transition-show="fade" transition-hide="fade">
@@ -180,7 +179,6 @@ const report = ref<Report | null>(null);
 const loading = ref(true);
 const updating = ref(false);
 const tempStatus = ref<number | null>(null);
-const mobileSheetOpen = ref(false);
 const imageDialog = ref(false);
 const selectedImage = ref('');
 
@@ -241,11 +239,14 @@ const fetchDetails = async () => {
 const confirmStatusChange = async () => {
   if (!tempStatus.value || !report.value) return;
   updating.value = true;
+
   try {
     await ReportService.updateStatus(report.value.id, tempStatus.value);
+
     report.value.status = tempStatus.value;
-    mobileSheetOpen.value = false;
     $q.notify({ type: 'positive', message: t('view.status.confirm'), position: 'top' });
+
+    void router.push('/admin/dashboard');
   } catch {
     console.error('Erro');
     $q.notify({ type: 'negative', message: t('view.status.confirmfail') });

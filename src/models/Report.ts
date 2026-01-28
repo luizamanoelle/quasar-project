@@ -15,7 +15,6 @@ export interface Report {
   status: number;
 }
 
-// Use 'type' para evitar o erro de interface vazia do ESLint
 export type ReportPayload = Omit<Report, 'id'>;
 
 export interface StatusConfigItem {

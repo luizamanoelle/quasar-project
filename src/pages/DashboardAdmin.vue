@@ -1,5 +1,5 @@
 <template>
-  <q-page class="bg-gray-50 p-4 md:p-6">
+  <q-page class="bg-background p-4 md:p-6">
     <!--infos-->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
       <!--novos-->
