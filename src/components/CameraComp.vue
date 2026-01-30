@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center w-full max-w-2xl mx-auto">
     <div
-      class="relative w-full aspect-[3/4] mb:aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl"
+      class="relative w-full aspect-[3/4] md:aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl"
     >
       <!--recebe a camera automaticamente -->
       <video ref="video" autoplay playsinline muted hidden></video>
@@ -135,7 +135,6 @@ function resizeCanvas() {
 
   const height = width * (4 / 3);
 
-  // Definimos a resolução interna do desenho
   canvas.value.width = video.value.videoWidth || width;
   canvas.value.height = video.value.videoHeight || height;
 }
@@ -160,10 +159,10 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  // Remove o ouvinte de evento para evitar vazamento de memória
+  //remove o listener
   window.removeEventListener('resize', resizeCanvas);
 
-  // Desliga cada trilha da câmera (vídeo)
+  //desliga a camera
   if (activeStream.value) {
     activeStream.value.getTracks().forEach((track) => track.stop());
   }

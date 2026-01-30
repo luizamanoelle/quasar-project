@@ -8,22 +8,15 @@
             flat
             icon="arrow_back"
             @click="$router.push('/citizen/dashboard')"
-            color="grey-9"
             :aria-label="$t('report.back')"
           />
           <span class="text-lg md:text-4xl font-bold"> {{ $t('report.title') }} </span>
 
-          <q-btn
-            flat
-            :aria-label="$t('report.close')"
-            icon="close"
-            @click="confirmCancel"
-            color="grey-9"
-          />
+          <q-btn flat :aria-label="$t('report.close')" icon="close" @click="confirmCancel" />
         </header>
 
         <!--separador-->
-        <q-separator color="black" inset class="full-width q-my-md" />
+        <q-separator inset class="full-width q-my-md" />
 
         <!--mapa-->
         <section>
@@ -31,7 +24,7 @@
           <div class="p-4 flex items-start">
             <q-icon name="las la-map-marker" size="lg" />
 
-            <p class="text-sm text-slate-700 font-medium">
+            <p class="text-sm font-medium">
               {{ locationStore.address.road }}, {{ locationStore.address.houseNumber }}
               <br />
               <span class="text-slate-500 font-normal">{{
@@ -57,7 +50,7 @@
           <help-dialog v-model="lightDialog" />
 
           <!--row de botões pra selecionar a categorias do report-->
-          <div class="grid grid-cols-5 sm:grid-cols-5 gap-3">
+          <div class="grid grid-cols-5 sm:grid-cols-5 gap-3 mt-2">
             <div v-for="opt in problemOptions" :key="opt.value">
               <!--botao-->
               <q-btn
@@ -89,7 +82,7 @@
         </section>
 
         <!--botao da foto-->
-        <section class="mt-2">
+        <section class="mt-4">
           <label class="text-bold text-base">{{ $t('report.phototitle') }}</label>
           <div class="grid grid-cols-3 gap-3 mt-2">
             <div v-for="(photo, index) in locationStore.photos" :key="index" class="relative group">
@@ -122,7 +115,7 @@
 
         <!--descrição-->
         <section>
-          <div class="mt-2">
+          <div class="mt-4">
             <!--titulo-->
             <span class="text-bold text-base">{{ $t('report.description') }}</span>
 
@@ -132,7 +125,7 @@
               v-model="reportStore.description"
               type="textarea"
               rows="3"
-              class="w-full rounded-2xl bg-white"
+              class="w-full rounded-2xl"
               :placeholder="$t('report.placeholder')"
             >
               <template v-slot:append>
@@ -153,11 +146,11 @@
             @click="submitReport"
             :loading="loading"
             no-caps
-            color="black"
+            :class="$q.dark.isActive ? 'bg-grey-8' : 'bg-black'"
             class="full-width"
             rounded
           >
-            <span class="text-bold text-xl px-4">{{ $t('report.send') }}</span>
+            <span class="text-bold text-xl px-4 text-white">{{ $t('report.send') }}</span>
             <q-icon name="las la-paper-plane" />
           </q-btn>
         </div>

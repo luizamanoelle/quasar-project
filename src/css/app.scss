@@ -1,4 +1,14 @@
-// app global css in SCSS form
+// src/css/app.scss
+
 body {
-  font-family: 'Roboto';
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--q-background);
+
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.bg-surface {
+  background-color: var(--q-surface) !important;
 }

@@ -22,6 +22,5 @@ export interface StatusConfigItem {
   label: string;
   color: string;
   icon: string;
-  gradient: string;
   description: string;
 }

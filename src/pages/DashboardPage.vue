@@ -5,15 +5,20 @@
     <q-page-container>
       <q-page>
         <!--header-->
-        <header class="m-6 md:pt-10 text-center">
-          <span class="text-2xl md:text-4xl"
-            >{{ $t('dashboard.greeting') }}, {{ authStore.user?.name || 'User' }}</span
-          >
+        <header class="m-6 md:pt-10 text-center relative">
+          <div class="flex items-center justify-center relative">
+            <span class="text-2xl md:text-4xl">
+              {{ $t('dashboard.greeting') }}, {{ authStore.user?.name || 'User' }}
+            </span>
+
+            <div class="absolute right-0">
+              <dark-mode-toggle />
+            </div>
+          </div>
+
           <p class="text-gray-500">{{ $t('dashboard.today') }} {{ day }} {{ month }}</p>
 
-          <q-separator color="black" inset class="full-width q-my-md" />
-
-          <!--mapa-->
+          <q-separator inset class="full-width q-my-md" />
           <GeoLocation />
         </header>
 
@@ -69,9 +74,7 @@
 
               <q-card-section class="flex-grow p-4">
                 <div class="flex justify-between items-start mb-2">
-                  <span
-                    class="text-xs font-bold uppercase tracking-wider text-gray-700 truncate max-w-[80%]"
-                  >
+                  <span class="text-xs font-bold uppercase tracking-wider truncate max-w-[80%]">
                     {{ getReportTypeName(report.type_id) }}
                   </span>
                   <div
@@ -81,7 +84,7 @@
                   ></div>
                 </div>
 
-                <p class="text-sm text-gray-600 line-clamp-2">
+                <p class="text-sm line-clamp-2">
                   {{ report.location?.address }}
                 </p>
               </q-card-section>
@@ -89,7 +92,7 @@
               <q-separator color="gray-100" />
 
               <q-card-actions class="px-4 py-3 bg-gray-50/50">
-                <time class="text-xs text-gray-400 font-medium">
+                <time class="text-xs font-medium">
                   {{ report.date }}
                 </time>
               </q-card-actions>
@@ -116,6 +119,7 @@ import { useI18n } from 'vue-i18n';
 import GeoLocation from 'src/components/GeoLocation.vue';
 import { ReportService } from 'src/services/ReportService';
 import type { Report as CityReport } from 'src/models/Report';
+import DarkModeToggle from 'src/components/DarkModeToggle.vue';
 
 const { t } = useI18n();
 const locationStore = useLocationStore();

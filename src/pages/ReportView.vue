@@ -1,41 +1,47 @@
 <template>
-  <q-page>
-    <div class="flex flex-center flex-col full-width min-h-screen md:flex-row p-6 md:p-12 gap-2">
-      <!--loading-->
-      <div v-if="loading" class="flex justify-center items-center h-screen">
-        <q-spinner-ios color="primary" size="3em" />
-      </div>
+  <q-page class="p-4 md:p-10">
+    <!--loading-->
+    <div v-if="loading" class="flex justify-center items-center min-h-screen">
+      <q-spinner-ios color="primary" size="3em" />
+    </div>
 
-      <div v-else-if="report">
+    <div v-else-if="report" class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-2">
         <!--titulo da ocorrencia e data-->
+        <!--titulo da ocorrencia-->
+        <div class="grid grid-cols-3 items-center mb-1">
+          <!--voltar-->
+          <div class="flex justify-start">
+            <q-btn
+              flat
+              :aria-label="$t('common.back')"
+              icon="arrow_back"
+              @click="$router.push('/admin/dashboard')"
+            />
+          </div>
 
-        <div class="md:pt-10 flex justify-between">
-          <q-btn
-            flat
-            :aria-label="$t('common.back')"
-            icon="arrow_back"
-            @click="$router.push('/admin/dashboard')"
-            color="grey-9"
-          />
-          <span class="text-2xl md:text-4xl">
-            {{ getReportTypeName(report.type_id) }}
-          </span>
-          <q-btn
-            flat
-            :aria-label="$t('common.back')"
-            icon="close"
-            @click="confirmCancel"
-            color="grey-9"
-          />
-          <div class="flex items-center">
-            <p class="text-gray-500 text-sm">{{ $t('view.date') }} {{ report.date }}</p>
+          <!--titulo central-->
+          <div class="text-center">
+            <span class="text-2xl md:text-4xl font-semibold">
+              {{ getReportTypeName(report.type_id) }}
+            </span>
+          </div>
+
+          <!--fechar-->
+          <div class="flex justify-end">
+            <q-btn flat icon="close" @click="confirmCancel" />
           </div>
         </div>
 
+        <!--data fora do header-->
+        <div class="text-center mb-4">
+          <p class="text-sm">{{ $t('view.date') }} {{ report.date }}</p>
+        </div>
+
         <!--card do status-->
-        <div class="rounded-3xl p-4 mb-4 text-white" :class="getStatus(report.status).gradient">
+        <div class="rounded-3xl p-4" :class="getStatus(report.status).color">
           <!--status e icon-->
-          <div class="text-2xl font-bold flex justify-between">
+          <div class="text-2xl font-bold flex justify-between items-center">
             {{ getStatus(report.status).label }}
             <q-icon :name="getStatus(report.status).icon" size="sm" />
           </div>
@@ -46,34 +52,38 @@
           </div>
         </div>
 
-        <q-separator color="black" inset class="full-width q-my-md" />
+        <q-separator inset class="q-my-md" />
+
         <!--fotos-->
         <section>
           <!--titulo e count-->
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-gray-800 text-2xl">{{ $t('view.photos') }}</span>
-            <span class="text-sm text-gray-400 bg-gray-200 px-2 py-1 rounded-full">{{
-              report.photos?.length || 0
-            }}</span>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-2xl font-semibold">
+              {{ $t('view.photos') }}
+            </span>
+            <span class="text-sm bg-surface px-2 py-1 rounded-full">
+              {{ report.photos?.length || 0 }}
+            </span>
           </div>
 
-          <section v-if="report.photos?.length" class="flex gap-4 pb-4">
-            <!--imagem---->
+          <section
+            v-if="report.photos?.length"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"
+          >
+            <!--imagem-->
             <div
               v-for="(photo, idx) in report.photos"
               :key="idx"
-              class="w-34 h-34 rounded-2xl overflow-hidden"
+              class="aspect-square rounded-2xl overflow-hidden cursor-pointer my-2"
               @click="openImage(photo)"
             >
-              <!--view da foto-->
               <q-img :src="photo" class="w-full h-full object-cover" />
-              <div class="bg-black/0"></div>
             </div>
           </section>
         </section>
 
         <!--info-->
-        <div class="bg-white rounded-2xl border border-gray-200">
+        <div class="rounded-2xl border border-gray-200">
           <q-list separator>
             <!--localização-->
             <q-item>
@@ -81,84 +91,81 @@
                 <q-icon name="place" />
               </q-item-section>
               <q-item-section>
-                <q-item-label caption class="mb-1 uppercase">{{
-                  $t('view.location')
-                }}</q-item-label>
-                <q-item-label class="font-semibold text-gray-800">
+                <q-item-label caption class="mb-1 uppercase">
+                  {{ $t('view.location') }}
+                </q-item-label>
+                <q-item-label class="font-semibold">
                   {{ report.location?.address }}
                 </q-item-label>
               </q-item-section>
             </q-item>
 
-            <!--descrição---->
+            <!--descrição-->
             <q-item v-if="report.description">
               <q-item-section avatar>
                 <q-icon name="description" />
               </q-item-section>
               <q-item-section>
-                <q-item-label caption class="mb-1 uppercase">{{
-                  $t('view.description')
-                }}</q-item-label>
-                <q-item-label class="text-gray-600 text-sm">
-                  "{{ report.description }}"
+                <q-item-label caption class="mb-1 uppercase">
+                  {{ $t('view.description') }}
                 </q-item-label>
+                <q-item-label class="text-sm"> "{{ report.description }}" </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
         </div>
       </div>
 
-      <!--att status-->
+      <div class="space-y-6">
+        <!--att status-->
+        <div class="rounded-3xl p-6 border border-gray-200 sticky top-6">
+          <span class="block text-2xl font-bold mb-4 text-center">
+            {{ $t('view.update') }}
+          </span>
 
-      <div class="p-6 pb-10">
-        <span class="text-3xl font-bold text-gray-900 text-center">{{ $t('view.update') }}</span>
+          <button
+            v-for="opt in Object.values(STATUS_CONFIG)"
+            :key="opt.value"
+            class="w-full p-3 rounded-3xl flex items-center gap-5 border-2 mb-3"
+            :class="tempStatus === opt.value ? 'border-gray-500' : 'border-transparent'"
+            @click="tempStatus = opt.value"
+          >
+            <!--icons-->
+            <div :class="`bg-${opt.color} text-${opt.color} p-3 rounded-full`">
+              <q-icon :name="opt.icon" size="sm" />
+            </div>
 
-        <button
-          v-for="opt in Object.values(STATUS_CONFIG)"
-          :key="opt.value"
-          class="w-full p-3 rounded-3xl flex items-center gap-5 border-2"
-          :class="tempStatus === opt.value ? ` border-gray-500` : 'bg-white border-transparent '"
-          @click="tempStatus = opt.value"
-        >
-          <!--icons-->
-          <div :class="`bg-${opt.color}-100 text-${opt.color}-600 p-3 rounded-full`">
-            <q-icon :name="opt.icon" size="sm" />
+            <!--title-->
+            <div class="flex-1 text-left">
+              <div class="font-bold">
+                {{ opt.label }}
+              </div>
+            </div>
+          </button>
+
+          <!--confirmar troca de status-->
+          <div class="mt-5">
+            <q-btn
+              v-if="hasChanges"
+              icon="las la-check"
+              :label="$t('common.confirm')"
+              color="positive"
+              class="w-full mt-6 py-4 rounded-xl font-bold text-lg"
+              :loading="updating"
+              @click="confirmStatusChange"
+            />
           </div>
-          <!--title-->
-          <div class="flex-1 text-left">
-            <div class="font-bold text-gray-900">{{ opt.label }}</div>
-          </div>
-        </button>
-
-        <!--confirmar troca de status-->
-        <div class="my-8 justify-items-end">
-          <q-btn
-            icon="las la-check"
-            v-if="hasChanges"
-            :label="$t('common.confirm')"
-            color="positive"
-            class="w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex justify-right text-black"
-            :loading="updating"
-            @click="confirmStatusChange"
-          />
         </div>
       </div>
-
-      <!--open image-->
-      <q-dialog v-model="imageDialog" maximized transition-show="fade" transition-hide="fade">
-        <div class="flex flex-col h-full backdrop-blur-md">
-          <q-btn
-            icon="close"
-            flat
-            round
-            color="white"
-            class="absolute top-6 right-6 z-50 bg-white/20"
-            v-close-popup
-          />
-          <q-img :src="selectedImage" fit="contain" class="h-full w-full" />
-        </div>
-      </q-dialog>
     </div>
+
+    <!--open image-->
+    <q-dialog v-model="imageDialog" maximized transition-show="fade" transition-hide="fade">
+      <div class="flex flex-col h-full backdrop-blur-md">
+        <q-btn icon="close" flat round class="absolute top-6 right-6 z-50" v-close-popup />
+        <q-img :src="selectedImage" fit="contain" class="h-full w-full" />
+      </div>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -190,25 +197,24 @@ const STATUS_CONFIG: Record<number, StatusConfigItem> = {
   1: {
     value: 1,
     label: t('view.status.1.label'),
-    color: 'red',
+    color: 'bg-negative',
     icon: 'schedule',
-    gradient: 'bg-gradient-to-br from-red-600 to-red-800 shadow-red-500/30',
+
     description: t('view.status.1.description'),
   },
   2: {
     value: 2,
     label: t('view.status.2.label'),
-    color: 'orange',
+    color: 'bg-warning',
     icon: 'engineering',
-    gradient: 'bg-gradient-to-br from-orange-400 to-orange-600 shadow-orange-500/30',
     description: t('view.status.2.description'),
   },
   3: {
     value: 3,
     label: t('view.status.3.label'),
-    color: 'green',
+    color: 'bg-positive',
     icon: 'check_circle',
-    gradient: 'bg-gradient-to-br from-green-500 to-green-700 shadow-green-500/30',
+
     description: t('view.status.3.description'),
   },
 };

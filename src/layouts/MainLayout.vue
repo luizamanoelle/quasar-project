@@ -4,7 +4,7 @@
       <router-view />
     </q-page-container>
 
-    <q-footer class="bg-white text-grey-8 shadow-up-2">
+    <q-footer class="text-grey-8 shadow-up-2" :class="$q.dark.isActive ? 'bg-grey-10' : 'bg-white'">
       <q-toolbar>
         <div class="w-full max-w-scheen-lg pb-2 mt-1">
           <!--home-->
@@ -12,8 +12,7 @@
             no-caps
             active-color="primary"
             indicator-color="transparent"
-            class="text-gray-700"
-            align="justify"
+            :class="$q.dark.isActive ? 'text-white' : 'text-grey-7'"
             dense
           >
             <q-route-tab to="/citizen/dashboard" exact class="flex-1">
@@ -24,7 +23,13 @@
             <!--report-->
             <q-route-tab to="/citizen/report" class="flex-1 overflow-visible">
               <div class="flex flex-col items-center">
-                <q-btn round unelevated color="black" icon="add" size="25px" />
+                <q-btn
+                  round
+                  unelevated
+                  :class="$q.dark.isActive ? 'bg-grey-8' : 'bg-black'"
+                  icon="add"
+                  size="25px"
+                />
                 <span class="font-bold">{{ $t('layout.report') }}</span>
               </div>
             </q-route-tab>

@@ -3,6 +3,9 @@
     <q-page-container>
       <q-page>
         <div class="flex flex-col full-width min-h-screen md:flex-row md:p-25 md:items-center">
+          <div class="flex justify-end pt-6">
+            <dark-mode-toggle />
+          </div>
           <!--image-->
           <div class="w-full max-w-sm md:max-w-lg">
             <q-img :src="catImage" class="md:scale-130" fit="contain" />
@@ -50,7 +53,7 @@
                     label="Entrar"
                     icon="login"
                     type="submit"
-                    color="black"
+                    :class="$q.dark.isActive ? 'bg-grey-8' : 'bg-black'"
                     rounded
                     class="full-width font-bold text-white"
                     :loading="loading"
@@ -74,6 +77,7 @@ import catImage from 'assets/login.svg';
 import { useAuthStore } from 'src/stores/auth';
 import { useI18n } from 'vue-i18n';
 import type { LoginCredentials } from 'src/models/Auth';
+import DarkModeToggle from 'src/components/DarkModeToggle.vue';
 
 const { t } = useI18n();
 

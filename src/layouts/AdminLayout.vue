@@ -1,9 +1,9 @@
 <template>
-  <q-layout view="hHh lpR fFf" class="bg-gray-50">
+  <q-layout view="hHh lpR fFf">
     <q-header
       bordered
-      class="text-gray-800 border-gray-200 h-16 flex items-center"
-      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-white'"
+      class="border-gray-200 h-16 flex items-center"
+      :class="$q.dark.isActive ? 'bg-grey-10' : 'bg-white'"
     >
       <q-toolbar>
         <div class="flex items-center justify-between w-full">
@@ -11,7 +11,11 @@
           <div class="flex items-center">
             <q-btn flat round no-caps aria-label="$t('layout.open')" @click="drawer = !drawer">
               <div class="flex items-center">
-                <q-avatar size="34px" class="bg-purple-100 text-primary font-bold">
+                <q-avatar
+                  size="34px"
+                  class="bg-surface font-bold"
+                  :class="$q.dark.isActive ? 'text-white' : 'text-black'"
+                >
                   {{ userInitial }}
                 </q-avatar>
               </div>
@@ -19,7 +23,7 @@
           </div>
 
           <!--data-->
-          <div class="text-gray-700 text-sm font-medium">
+          <div class="text-sm font-medium" :class="$q.dark.isActive ? 'text-white' : 'text-black'">
             <span class="capitalize">{{ currentDate }}</span>
           </div>
 
@@ -43,10 +47,12 @@
       :width="150"
       :breakpoint="200"
       bordered
-      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-white'"
+      :class="$q.dark.isActive ? 'bg-grey-10' : 'bg-white'"
     >
       <div class="p-4">
         <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Opções</div>
+
+        <DarkModeToggle />
 
         <q-item clickable @click="handleLogout">
           <q-item-section avatar>
@@ -56,8 +62,6 @@
             <span class="font-medium">{{ $t('layout.logout') }}</span>
           </q-item-section>
         </q-item>
-
-        <DarkModeToggle />
       </div>
     </q-drawer>
 

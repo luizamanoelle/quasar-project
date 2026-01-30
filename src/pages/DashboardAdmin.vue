@@ -1,101 +1,112 @@
 <template>
-  <q-page class="bg-background p-4 md:p-6">
-    <!--infos-->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-      <!--novos-->
-      <div class="p-3 bg-blue-100 rounded-lg">
-        <div class="text-[10px] uppercase font-bold mb-1">{{ $t('admin.news') }}</div>
-        <div class="flex items-end justify-between">
-          <span class="text-2xl font-bold">{{ stats.todayCount }}</span>
-          <q-icon name="today" size="xs" color="blue-3" />
-        </div>
-      </div>
+  <q-layout view="lHh Lpr lFf">
+    <q-page-container>
+      <q-page class="p-4 md:p-6">
+        <!--infos-->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <!--novos-->
+          <div class="p-3 bg-info rounded-lg">
+            <div class="text-[10px] uppercase font-bold mb-1">{{ $t('admin.news') }}</div>
+            <div class="flex items-end justify-between">
+              <span class="text-2xl font-bold">{{ stats.todayCount }}</span>
+              <q-icon name="today" size="xs" />
+            </div>
+          </div>
 
-      <!--críticos-->
-      <div class="bg-red-100 p-3 rounded-lg">
-        <div class="text-[10px] uppercase font-bold text-red-500 mb-1">
-          {{ $t('admin.critical') }}
-        </div>
-        <div class="flex items-end justify-between">
-          <span class="text-2xl font-bold">{{ stats.overdueCount }}</span>
-          <q-icon name="priority_high" size="xs" color="red-3" />
-        </div>
-      </div>
+          <!--críticos-->
+          <div class="bg-negative p-3 rounded-lg">
+            <div class="text-[10px] uppercase font-bold mb-1">
+              {{ $t('admin.critical') }}
+            </div>
+            <div class="flex items-end justify-between">
+              <span class="text-2xl font-bold">{{ stats.overdueCount }}</span>
+              <q-icon name="priority_high" size="xs" />
+            </div>
+          </div>
 
-      <!--em analise-->
-      <div class="bg-orange-100 p-3 rounded-lg">
-        <div class="text-[10px] uppercase font-bold text-orange-500 mb-1">
-          {{ $t('admin.analysis') }}
-        </div>
-        <div class="flex items-end justify-between">
-          <span class="text-2xl font-bold">{{ stats.inProgressCount }}</span>
-          <q-icon name="hourglass_empty" size="xs" color="orange-3" />
-        </div>
-      </div>
+          <!--em analise-->
+          <div class="bg-warning p-3 rounded-lg">
+            <div class="text-[10px] uppercase font-bold mb-1">
+              {{ $t('admin.analysis') }}
+            </div>
+            <div class="flex items-end justify-between">
+              <span class="text-2xl font-bold">{{ stats.inProgressCount }}</span>
+              <q-icon name="hourglass_empty" size="xs" />
+            </div>
+          </div>
 
-      <!--total-->
-      <div class="bg-gray-200 p-3 rounded-lg dark:text-red-500">
-        <div class="text-[10px] uppercase font-bold text-gray-500 mb-1">
-          {{ $t('admin.total') }}
-        </div>
-        <div class="flex items-end justify-between">
-          <span class="text-2xl font-bold">{{ reports.length }}</span>
-          <q-icon name="inventory" size="xs" color="gray-3" />
-        </div>
-      </div>
-    </div>
-
-    <!--status-->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-1 flex flex-col gap-6">
-        <div class="bg-white p-4 rounded-lg lg:col-span-1">
-          <div class="space-y-4">
-            <div v-for="s in statusChartData" :key="s.label">
-              <div class="flex justify-between text-xs mb-1">
-                <span>{{ s.label }}</span>
-                <span class="font-bold">{{ s.value }}</span>
-              </div>
-              <q-linear-progress :value="s.percent" :color="s.color" rounded size="8px" />
+          <!--total-->
+          <div class="bg-surface p-3 rounded-lg">
+            <div class="text-[10px] uppercase font-bold mb-1">
+              {{ $t('admin.total') }}
+            </div>
+            <div class="flex items-end justify-between">
+              <span class="text-2xl font-bold">{{ reports.length }}</span>
+              <q-icon name="inventory" size="xs" />
             </div>
           </div>
         </div>
 
-        <!--calendario-->
-        <div class="bg-white p-4 rounded-2xl shadow-sm flex justify-cente">
-          <q-date v-model="dateFilter" minimal flat today-btn color="primary" class="full-width" />
-        </div>
-      </div>
+        <!--status-->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-1 flex flex-col gap-6">
+            <div class="p-4 rounded-lg lg:col-span-1">
+              <div class="space-y-4">
+                <div v-for="s in statusChartData" :key="s.label">
+                  <div class="flex justify-between text-xs mb-1">
+                    <span>{{ s.label }}</span>
+                    <span class="font-bold">{{ s.value }}</span>
+                  </div>
+                  <q-linear-progress :value="s.percent" :color="s.color" rounded size="8px" />
+                </div>
+              </div>
+            </div>
 
-      <!--tabela-->
-      <div class="lg:col-span-2">
-        <q-table
-          flat
-          :rows="filteredReports"
-          :columns="columns"
-          row-key="id"
-          :loading="loading"
-          v-model:pagination="pagination"
-          :rows-per-page-options="[0]"
-          virtual-scroll
-        >
-          <!--reportview-->
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-btn
-                :aria-label="$t('admin.view')"
+            <!--calendario-->
+            <div class="rounded-2xl shadow-sm flex justify-cente">
+              <q-date
+                v-model="dateFilter"
+                minimal
                 flat
-                round
-                size="sm"
+                today-btn
                 color="primary"
-                icon="launch"
-                @click="goToDetails(props.row.id)"
+                class="full-width"
               />
-            </q-td>
-          </template>
-        </q-table>
-      </div>
-    </div>
-  </q-page>
+            </div>
+          </div>
+
+          <!--tabela-->
+          <div class="lg:col-span-2">
+            <q-table
+              flat
+              :rows="filteredReports"
+              :columns="columns"
+              row-key="id"
+              :loading="loading"
+              v-model:pagination="pagination"
+              :rows-per-page-options="[0]"
+              virtual-scroll
+            >
+              <!--reportview-->
+              <template v-slot:body-cell-action="props">
+                <q-td :props="props">
+                  <q-btn
+                    :aria-label="$t('admin.view')"
+                    flat
+                    round
+                    size="sm"
+                    color="primary"
+                    icon="launch"
+                    @click="goToDetails(props.row.id)"
+                  />
+                </q-td>
+              </template>
+            </q-table>
+          </div>
+        </div>
+      </q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script setup lang="ts">

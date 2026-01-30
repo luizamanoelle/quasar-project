@@ -2,6 +2,9 @@
   <q-layout view="lHh Lpr lFf">
     <q-page-container>
       <q-page>
+        <div class="flex justify-end pt-6">
+          <dark-mode-toggle />
+        </div>
         <div
           class="flex flex-center flex-col full-width min-h-screen md:flex-row p-6 md:p-12 gap-2"
         >
@@ -27,6 +30,7 @@
           <div class="w-full max-w-xs md:max-w-sm lg:max-w-lg">
             <q-btn
               :label="$t('index.btnStart')"
+              :class="$q.dark.isActive ? 'bg-grey-8' : 'bg-black'"
               color="black"
               rounded
               unelevated
@@ -44,4 +48,5 @@
 
 <script setup lang="ts">
 import imageUrl from 'assets/home.svg';
+import DarkModeToggle from 'src/components/DarkModeToggle.vue';
 </script>
